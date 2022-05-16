@@ -1,125 +1,140 @@
-import React from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 
-import { HEROES, COMICS } from './custom/data';
-import { shuffle, getTimeLeft, move, GAME_STATE } from './custom/utils';
+import * as constants from "./custom/data";
+import { CARDS, BENCHES, EMPTY_CARD } from './custom/data';
+import { shuffle, move, GAME_STATE } from './custom/utils';
 
 import Modal from './components/Modal';
 import Header from './components/Header';
-import Dropzone from './components/Dropzone';
+import RoutineBench from './components/RoutineBench';
+import ShopBench from './components/ShopBench';
+import CharacterBench from './components/CharacterBench';
 import Footer from './components/Footer';
-
-const GAME_DURATION = 1000 * 30; // 30 seconds
+import { rollShop, startNewGame } from './custom/fetcher';
 
 const initialState = {
   // we initialize the state by populating the bench with a shuffled collection of heroes
-  bench: shuffle(HEROES),
-  [COMICS.DC]: [],
-  [COMICS.MARVEL]: [],
+  [BENCHES.SHOP]: {
+    id: BENCHES.SHOP,
+    slots: shuffle(CARDS),
+  },
+  [BENCHES.ROUTINE]: {
+    id: BENCHES.ROUTINE,
+    slots: [EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD]
+  },
+  [BENCHES.CHARACTER]: {
+    id: BENCHES.CHARACTER,
+    slots: [EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD]
+  },
+  gameId: '',
+  turnCounter: 1,
+  selectedCard: null,
   gameState: GAME_STATE.READY,
   timeLeft: 0,
 };
 
-class App extends React.Component {
-  state = initialState;
+function App() {
+  // const initialState = await startNewGame();
+  const [gameData, setGameData] = useState(initialState);
 
-  startGame = () => {
-    this.currentDeadline = Date.now() + GAME_DURATION;
+  const startGame = async () => {
+    const startNewGameResp = await startNewGame();
+    setGameData(gameData => 
+      ({
+        ...gameData,
+        ...startNewGameResp
+      })
+    );
+  };
+  
+  useEffect(() => {
+    startGame();
+  }, []);
 
-    this.setState(
-      {
-        gameState: GAME_STATE.PLAYING,
-        timeLeft: getTimeLeft(this.currentDeadline),
-      },
-      this.gameLoop
+  const endGame = () => {
+
+    setGameData(gameData => 
+      ({
+        ...gameData,
+        gameState: GAME_STATE.DONE,
+      })
     );
   };
 
-  gameLoop = () => {
-    this.timer = setInterval(() => {
-      const timeLeft = getTimeLeft(this.currentDeadline);
-      const isTimeout = timeLeft <= 0;
-      if (isTimeout && this.timer) {
-        clearInterval(this.timer);
+  const resetGame = () => {
+    // setState(initialState);
+  };
+
+  const onRerollShop = async () => {
+    const rerollResp = await rollShop(gameData['character_stats'].gold); // TODO dont actually send gold
+    setGameData((state) => ({
+      ...state,
+      ...rerollResp,
+    }));
+  };
+
+  const onDragStart = useCallback(({ source }) => {
+    setGameData((state) => {
+      const selectedCard =  state[source.droppableId].slots[source.index];
+      return {
+        ...state,
+        selectedCard,
       }
+    })
+  }, []);
 
-      this.setState({
-        timeLeft: isTimeout ? 0 : timeLeft,
-        ...(isTimeout ? { gameState: GAME_STATE.DONE } : {}),
-      });
-    }, 1000);
-  };
-
-  endGame = () => {
-    if (this.timer) {
-      clearInterval(this.timer);
-    }
-
-    this.setState({
-      gameState: GAME_STATE.DONE,
-    });
-  };
-
-  resetGame = () => {
-    this.setState(initialState);
-  };
-
-  onDragEnd = ({ source, destination }) => {
-    if (!destination) {
+  const onDragEnd = useCallback(({ source, destination, combine }) => {
+    // the only one that is required
+    if (!destination && !combine) {
+      console.log('no dest')
       return;
     }
-
-    this.setState(state => {
-      return move(state, source, destination);
-    });
-  };
-
-  render() {
-    const { gameState, timeLeft, bench, ...groups } = this.state;
-    const isDropDisabled = gameState === GAME_STATE.DONE;
-
-    return (
-      <>
-        <Header gameState={gameState} timeLeft={timeLeft} endGame={this.endGame} />
-        {this.state.gameState !== GAME_STATE.PLAYING && (
-          <Modal
-            startGame={this.startGame}
-            resetGame={this.resetGame}
-            timeLeft={timeLeft}
-            gameState={gameState}
-            groups={groups}
-          />
-        )}
-        {(this.state.gameState === GAME_STATE.PLAYING ||
-          this.state.gameState === GAME_STATE.DONE) && (
-          <DragDropContext onDragEnd={this.onDragEnd}>
-            <div className="container">
-              <div className="columns">
-                <Dropzone
-                  id={COMICS.MARVEL}
-                  heroes={this.state[COMICS.MARVEL]}
-                  isDropDisabled={isDropDisabled}
-                />
-                <Dropzone id="bench" heroes={bench} isDropDisabled={isDropDisabled} />
-                <Dropzone
-                  id={COMICS.DC}
-                  heroes={this.state[COMICS.DC]}
-                  isDropDisabled={isDropDisabled}
-                />
-              </div>
-            </div>
-          </DragDropContext>
-        )}
-        <Footer />
-      </>
-    );
-  }
-
-  componentWillUnmount() {
-    if (this.timer) {
-      clearInterval(this.timer);
+    if (combine) {
+      // debugger;
     }
-  }
+
+    setGameData((state) => {
+      return {...state, ...move(state, source, destination, combine)};
+    });
+  }, []);
+  
+  const { gameState, timeLeft, bench, ...groups } = gameData;
+  const isDropDisabled = gameState === GAME_STATE.DONE;
+  return (
+    <>
+      <Header gameState={gameState} timeLeft={timeLeft} endGame={endGame} />
+      {( true || gameData.gameState === GAME_STATE.PLAYING ||
+        gameData.gameState === GAME_STATE.DONE) && (
+        <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
+          <div className="container">
+            <div className="columns">
+              <RoutineBench
+                id={BENCHES.ROUTINE}
+                selectedCard={gameData.selectedCard}
+                cards={gameData[BENCHES.ROUTINE].slots}
+                isDropDisabled={isDropDisabled}
+              />
+              <CharacterBench
+                id={BENCHES.CHARACTER}
+                characterStats={gameData[constants.CHARACTER_STATS]}
+                selectedCard={gameData.selectedCard}
+                cards={gameData[BENCHES.CHARACTER].slots}
+                isDropDisabled={isDropDisabled}
+              />
+            </div>
+            <button onClick={onRerollShop}>Reroll Shop</button>
+            <ShopBench 
+              id={BENCHES.SHOP}
+              selectedCard={gameData.selectedCard}
+              cards={gameData[BENCHES.SHOP].slots}
+              isDropDisabled={isDropDisabled} />
+          </div>
+        </DragDropContext>
+      )}
+      <Footer />
+    </>
+  );
 }
 
 export default App;

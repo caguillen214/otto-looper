@@ -1,7 +1,7 @@
-import { HEROES, COMICS } from './data';
+import { CARDS, CARD_TYPES, COMICS } from './data';
 
 // the Knuth shuffle algorithm
-export function shuffle(array) {
+export const shuffle = (array) => {
   let currentIndex = array.length;
   let temporaryValue;
   let randomIndex;
@@ -23,12 +23,12 @@ export function shuffle(array) {
 
 // method to handle points calculation based on sort order as well as grouping
 function calculateScore(groupedHeroes, comics) {
-  const correctOrder = HEROES.filter(hero => hero.comics === comics).sort((a, b) =>
+  const correctOrder = [].filter(hero => hero.comics === comics).sort((a, b) =>
     a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1
   );
 
   return groupedHeroes.reduce((score, { name }, index) => {
-    const maxPoint = HEROES.length;
+    const maxPoint = 0;
     const heroIndex = correctOrder.findIndex(hero => hero.name === name);
     const penalty = heroIndex >= 0 ? Math.abs(index - heroIndex) : maxPoint;
     console.log({ name, points: maxPoint - penalty });
@@ -46,22 +46,40 @@ export function getTotalScore(groups, timeLeft) {
 }
 
 // method to handle to the heroe cards movement
-export const move = (state, source, destination) => {
-  const srcListClone = [...state[source.droppableId]];
-  const destListClone =
-    source.droppableId === destination.droppableId
-      ? srcListClone
-      : [...state[destination.droppableId]];
-
+export const move = (state, source, destination, combine) => {
+  const srcListClone = [...state[source.droppableId].slots];
+  var destListClone;
+  if (combine) {
+    if (combine.draggableId.includes(CARD_TYPES.EMPTY)) {
+      destListClone = [...state[combine.droppableId].slots]
+      destListClone.splice(source.index, 1);
+      // TODO: Change how this works it is a terrible way to get index
+      const index = combine.draggableId.charAt(combine.draggableId.length - 1);
+      destination = {droppableId: combine.droppableId, index};
+    }
+  } else {
+    destListClone =
+      source.droppableId === destination.droppableId
+        ? srcListClone
+        : [...state[destination.droppableId].slots];
+  }
   const [movedElement] = srcListClone.splice(source.index, 1);
   destListClone.splice(destination.index, 0, movedElement);
 
+
   return {
-    [source.droppableId]: srcListClone,
+    selectedCard: null,
+    [source.droppableId]: {
+      ...source,
+      slots: srcListClone,
+    },
     ...(source.droppableId === destination.droppableId
       ? {}
       : {
-          [destination.droppableId]: destListClone,
+          [destination.droppableId]: {
+            ...destination,
+            slots: destListClone,
+          }
         }),
   };
 };

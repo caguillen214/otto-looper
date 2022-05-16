@@ -6,7 +6,7 @@
     "react": "^16.8.3",
     "react-beautiful-dnd": "^10.0.4",
     "react-dom": "^16.8.3",
-    "react-scripts": "2.1.5",
+    "react-scripts": "^3.4.1",
     "spectre.css": "^0.5.8"
   },
   "scripts": {
@@ -23,5 +23,9 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "@babel/plugin-proposal-optional-chaining": "^7.16.7",
+    "run-script-os": "^1.1.6"
+  }
 }

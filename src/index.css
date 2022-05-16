@@ -3,18 +3,99 @@ header.navbar {
   margin: 5px 20px;
 }
 
-div.menu .menu-item.tile.tile-centered {
+/* div.menu .menu-item.tile.tile-centered {
   margin-top: 5px;
-}
+} */
 
 .menu.hero-list {
-  z-index: inherit;
+  min-height: 200px;
+  padding-top: 25px;
   transform: none;
-  min-height: 500px;
+  z-index: inherit;
 }
 
 footer {
   position: fixed;
   bottom: 0;
   font-size: 14px;
+}
+
+.statModContainer {
+  display: flex;
+}
+
+.statModSlot {
+  border: 1px solid red;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 70px;
+  height: 70px;
+  margin: 5px;
+}
+
+.menu-item {
+  height: 75px;
+  width: 75px;
+  align-items: center;
+}
+
+.card {
+  border-width: 2px;;
+  height: 125px;
+  padding: 4px;
+}
+
+.placeholder-card {
+  border: dashed lightgray;
+  width: 75px;
+}
+
+.character-bench, .character-card {
+  border: solid blue;
+}
+
+.routine-bench, .routine-card {
+  border: solid green;
+}
+
+.menu {
+  display: flex;
+  justify-content: space-around;
+}
+
+.empty-slot {
+  align-items: center;
+  border: 1px dashed #aaa;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.avatar {
+  height: 50px;
+  width: 50px;
+}
+
+.character-stats-container {
+  display: flex;
+  border: 1px solid lightblue;
+  justify-content: space-around;
+}
+
+.exp-bar-container {
+  display: flex;
+  width: 100%;
+  height: 15px;
+}
+
+.exp-bar {
+  border: 1px solid blue;
+  background-color: #66F;
+  flex: 1;
+}
+
+.exp-bar-empty {
+  border: 1px dashed lightblue;
+  background-color: #ddd;
 }
