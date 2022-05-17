@@ -8,7 +8,7 @@ const EmptySlot = ({ parentId, index, emptyText }) => {
       {provided => {
         return (
           <div
-            className="menu-item tile tile-centered card empty-slot"
+            className="tile tile-centered card empty-slot"
             ref={provided.innerRef}
             {...provided.draggableProps}
             {...provided.dragHandleProps}

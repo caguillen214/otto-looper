@@ -28,7 +28,7 @@ const CharacterBench = ({ isDropDisabled, selectedCard, cards = [], id, characte
         isDropDisabled={getDropDisabledStatus(isDropDisabled)}>
             {provided => {
             return (
-                <div className="menu character-bench hero-list" {...provided.droppableProps} ref={provided.innerRef}>
+                <div className="menu character-bench " {...provided.droppableProps} ref={provided.innerRef}>
                     {cards.map(({ name, type, exp, tier, cardId }, index) => (
                         <Card
                             key={name+index}

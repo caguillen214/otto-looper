@@ -7,13 +7,6 @@ header.navbar {
   margin-top: 5px;
 } */
 
-.menu.hero-list {
-  min-height: 200px;
-  padding-top: 25px;
-  transform: none;
-  z-index: inherit;
-}
-
 footer {
   position: fixed;
   bottom: 0;
@@ -34,15 +27,20 @@ footer {
   margin: 5px;
 }
 
-.menu-item {
-  height: 75px;
-  width: 75px;
-  align-items: center;
+.menu {
+  min-height: 150px;
+  padding-top: 25px;
+  transform: none;
+  z-index: inherit;
 }
 
 .card {
+  align-items: center;
+  background-color: #FFF0;
   border-width: 2px;;
-  height: 125px;
+  flex: 1;
+  font-size: 12px;
+  /* height: 125px; */
   padding: 4px;
 }
 
@@ -53,6 +51,7 @@ footer {
 
 .character-bench, .character-card {
   border: solid blue;
+  height: 150px;
 }
 
 .routine-bench, .routine-card {
@@ -72,10 +71,15 @@ footer {
   justify-content: center;
 }
 
-.avatar {
+.card-icon {
+  border-radius: 0px;
+  display: flex;
   height: 50px;
+  justify-content: center;
+  margin: auto;
   width: 50px;
 }
+
 
 .character-stats-container {
   display: flex;
@@ -86,7 +90,7 @@ footer {
 .exp-bar-container {
   display: flex;
   width: 100%;
-  height: 15px;
+  height: 5px;
 }
 
 .exp-bar {
@@ -98,4 +102,22 @@ footer {
 .exp-bar-empty {
   border: 1px dashed lightblue;
   background-color: #ddd;
+}
+
+.if-card {
+  align-items: start;
+  color: goldenrod;
+}
+
+.if-range-bars {
+  border: 2px dashed goldenrod;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 4px 8px;
+}
+
+.if-condition-container {
+  min-height: 100px;
+  flex-grow: 1;
 }

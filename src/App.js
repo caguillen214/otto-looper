@@ -21,7 +21,7 @@ const initialState = {
   },
   [BENCHES.ROUTINE]: {
     id: BENCHES.ROUTINE,
-    slots: [EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD]
+    slots: [EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD]
   },
   [BENCHES.CHARACTER]: {
     id: BENCHES.CHARACTER,
@@ -76,7 +76,7 @@ function App() {
 
   const onDragStart = useCallback(({ source }) => {
     setGameData((state) => {
-      const selectedCard =  state[source.droppableId].slots[source.index];
+      const selectedCard =  state[source.droppableId]?.slots[source.index];
       return {
         ...state,
         selectedCard,
@@ -123,7 +123,9 @@ function App() {
                 isDropDisabled={isDropDisabled}
               />
             </div>
-            <button onClick={onRerollShop}>Reroll Shop</button>
+            <div className='column col-12' style={{marginTop: '16px'}}>
+              <button onClick={onRerollShop}>Reroll Shop</button>
+            </div>
             <ShopBench 
               id={BENCHES.SHOP}
               selectedCard={gameData.selectedCard}

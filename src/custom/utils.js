@@ -1,4 +1,6 @@
+import React from 'react';
 import { CARDS, CARD_TYPES, COMICS } from './data';
+import { moveIfConditionCard } from './fetcher';
 
 // the Knuth shuffle algorithm
 export const shuffle = (array) => {
@@ -45,8 +47,29 @@ export function getTotalScore(groups, timeLeft) {
   return gameScore ? gameScore + timeBonus : 0;
 }
 
+export const makeExpBars = (exp, level) => {
+  const expBars = [];
+  for (let i = 0; i < 3; i++) {
+    const toPush = <div key={i} className={i < exp % 3 ? 'exp-bar' : 'exp-bar exp-bar-empty'}></div>
+    expBars.push(toPush);
+  }
+  return expBars;
+}
+
+const moveIfCond = async (state, source, destination, combine) => {
+  console.log(state);
+  console.log(source);
+  console.log(destination);
+  console.log(combine);
+  return await moveIfConditionCard(state, source, destination);
+}
+
 // method to handle to the heroe cards movement
 export const move = (state, source, destination, combine) => {
+  if (source.droppableId.startsWith('if-slots')) {
+    const resp = moveIfCond(state, source, destination, combine);
+    return resp;
+  }
   const srcListClone = [...state[source.droppableId].slots];
   var destListClone;
   if (combine) {

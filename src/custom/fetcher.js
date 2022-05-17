@@ -10,7 +10,8 @@ export const startNewGame = async () => {
         },
         [BENCHES.ROUTINE]: {
             id: BENCHES.ROUTINE,
-            slots: [EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD]
+            slots: [EMPTY_CARD, constants.IF_CARD_WITH_ONE_SUB, EMPTY_CARD, constants.IF_CARD_WITH_ONE_SUB2, EMPTY_CARD, EMPTY_CARD]
+            // slots: [EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD]
         },
         [BENCHES.CHARACTER]: {
             id: BENCHES.CHARACTER,
@@ -46,6 +47,40 @@ export const rollShop = async (gold) => { // TODO dont actually use gold here
             [constants.HEAL]: 2,
         }
     });
+}
+
+export const startRound = async () => {
+    return Promise.resolve({});
+}
+
+export const moveIfConditionCard = async (state, source, destination) => {
+    const sourceCardId = source.droppableId.split(':')[1];
+    const destinationCardId = destination.droppableId.split(':')[1];
+    const sourceIfCard = state[BENCHES.ROUTINE].slots.find((card) => {
+        return card.cardId === sourceCardId;
+    });
+    const destinationIfCard = state[BENCHES.ROUTINE].slots.find((card) => {
+        return card.cardId === destinationCardId;
+    }); 
+    const srcListClone = [...sourceIfCard.slots];
+    const destListClone = source.droppableId === destination.droppableId ?
+        srcListClone
+        : [...destinationIfCard.slots];
+    const [movedElement] = srcListClone.splice(source.index, 1);
+    destListClone.splice(destination.index, 0, movedElement);
+    sourceIfCard.slots = srcListClone;
+    destinationIfCard.slots = destListClone;
+    return Promise.resolve({
+        ...state
+    });
+}
+
+export const mergeCard = async () => {
+    return Promise.resolve({});
+}
+
+export const purchaseRoutineCard = async () => {
+    return Promise.resolve({});
 }
 
 export const purchaseCharacterCard = async (gold, shopCards, purchasedCardInd) => { // TODO dont actually use gold here
