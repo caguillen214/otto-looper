@@ -20,7 +20,7 @@ const Card = ({ name, type, index, exp, tier, cardId, parentId, emptyText, isPic
               {...provided.draggableProps}
               {...provided.dragHandleProps}>
             {parentId !== BENCHES.SHOP && <div>
-              <div>Level: {level}</div>
+              <div style={{marginBottom: '4px'}}>Level: {level}</div>
               {exp !== 0 && level !== 3 && <div className="exp-bar-container">
                 {makeExpBars(exp, level)}
               </div>}
