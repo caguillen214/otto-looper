@@ -12,7 +12,7 @@ const Card = ({ name, type, index, exp, tier, cardId, parentId, emptyText, isPic
   const cardClass = 'card ' + (isPickedUp ? 'placeholder-card' : (type === CARD_TYPES.ROUTINE ? 'routine-card': 'character-card'));
 
   return ( emptyCard ??
-    <Draggable key={name} draggableId={name+cardId} index={index} type={type}>
+    <Draggable key={name} draggableId={name+':'+cardId} index={index} type={type}>
       {(provided) => {
         return (
           <div className={cardClass}     

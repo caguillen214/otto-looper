@@ -26,66 +26,71 @@ const IfCard = (props) => {
 
   const dashOrSolid = getDropDisabledStatus() ? 'solid' : 'dashed'
 
+  const rangeBarWidth = `calc(${(ifRangeLevel+1)*100}% + ${((ifRangeLevel+1) * 8)}px)`
 
   return (
-    <Draggable key={name} draggableId={name+cardId} index={index} type={type}>
-      {provided => {
-        return (
-          <div className={cardClass}    
-              ref={provided.innerRef}
-              {...provided.draggableProps}
-              {...provided.dragHandleProps}>
-            {/* <div className='if-card-container'> */}
-              <div className='if-range-bars' style={{width: (ifRangeLevel+1) * 100 +'%'}}></div>
-              {rangeExp !== 0 && ifRangeLevel !== 3 && <div className="exp-bar-container">
-                {makeExpBars(rangeExp, ifRangeLevel)}
-              </div>}
-              <div className="if-details-container" >
-                <div>IF enemy:</div>
-                {/* <div className=""> */}
-                  <Droppable
-                    isDropDisabled={getDropDisabledStatus()}
-                    droppableId={'if-slots:'+cardId}
-                    direction="vertical">
-                        {(provided, snapshot) => {
-                          console.log(snapshot)
-                          return (
-                            <div className='if-condition-container'>
-                              {conditionExp !== 0 && ifConditionLevel !== 3 && <div className="exp-bar-container-vertical">
-                                {makeExpBars(conditionExp, ifConditionLevel)}
-                              </div>}
-                              <div className="if-cards-container"
-                                  ref={provided.innerRef}
-                                  style={{borderStyle:`${dashOrSolid}`}}
-                                  {...provided.droppableProps} >
-                                  
-                                  {slots.map(({ name, type, exp, tier, cardId }, index) => (
-                                      <Card
-                                          key={name+index}
-                                          name={name}
-                                          index={index}
-                                          cardId={cardId}
-                                          parentId={'if-slots:'+cardId}
-                                          type={type}
-                                          exp={exp}
-                                          tier={tier}
-                                          emptyText="Empty"/>
-                                  ))}
-                                  {!snapshot.isDraggingOver && emptyConditionSlots()}
-                                  {provided.placeholder}
+    // <div className={cardClass} onMouseOver={()=>{console.log('over')}}>
+      <Draggable  key={name} draggableId={name+':'+cardId} index={index} type={type}>
+        {provided => {
+          return (
+            <div 
+                className={cardClass}
+                ref={provided.innerRef}
+                {...provided.draggableProps}
+                {...provided.dragHandleProps}>
+              {/* <div className='if-card-container'> */}
+                <div className='if-range-bars' style={{width: rangeBarWidth}}></div>
+                {rangeExp !== 0 && ifRangeLevel !== 3 && <div className="exp-bar-container">
+                  {makeExpBars(rangeExp, ifRangeLevel)}
+                </div>}
+                <div className="if-details-container" >
+                  <div>IF enemy:</div>
+                  {/* <div className=""> */}
+                    <Droppable
+                      key={'if-slots:'+cardId}
+                      isDropDisabled={getDropDisabledStatus()}
+                      droppableId={'if-slots:'+cardId}
+                      direction="vertical">
+                          {(provided, snapshot) => {
+                            console.log("ifcard: "+snapshot.isDraggingOver)
+                            return (
+                              <div className='if-condition-container'>
+                                {conditionExp !== 0 && ifConditionLevel !== 3 && <div className="exp-bar-container-vertical">
+                                  {makeExpBars(conditionExp, ifConditionLevel)}
+                                </div>}
+                                <div className="if-cards-container"
+                                    ref={provided.innerRef}
+                                    style={{borderStyle:`${dashOrSolid}`}}
+                                    {...provided.droppableProps} >
+                                    
+                                    {slots.map(({ name, type, exp, tier, cardId }, index) => (
+                                        <Card
+                                            key={name+':'+index}
+                                            name={name}
+                                            index={index}
+                                            cardId={cardId}
+                                            parentId={'if-slots:'+cardId}
+                                            type={type}
+                                            exp={exp}
+                                            tier={tier}
+                                            emptyText="Empty"/>
+                                    ))}
+                                    {emptyConditionSlots()}
+                                    { provided.placeholder}
+                                </div>
                               </div>
-                            </div>
-                          );
-                        }}
-                  </Droppable>
-                {/* </div> */}
-              </div>
-              <div className='if-range-bars' style={{width: (ifRangeLevel+1) * 100 +'%'}}></div>
-            {/* </div> */}
-          </div>
-        );
-      }}
-    </Draggable>
+                            );
+                          }}
+                    </Droppable>
+                  {/* </div> */}
+                </div>
+                <div className='if-range-bars' style={{width: rangeBarWidth}}></div>
+              {/* </div> */}
+            </div>
+          );
+        }}
+      </Draggable>
+  //  </div>
   );
 }
 

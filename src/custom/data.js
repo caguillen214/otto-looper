@@ -38,12 +38,12 @@ export const IF_CARD_WITH_ONE_SUB = {
   type: CARD_TYPES.ROUTINE,
   cardId: `${Math.random()}`,
   slots: [
-    {
-      name: 'atk',
-      type: CARD_TYPES.ROUTINE,
-      cardId: `${Math.random()}`,
-      exp: 1,
-    }
+    // {
+    //   name: 'atk',
+    //   type: CARD_TYPES.ROUTINE,
+    //   cardId: `${Math.random()}`,
+    //   exp: 1,
+    // }
   ],
   conditionExp: 1,
   rangeExp: 1,
@@ -69,30 +69,38 @@ export const CARDS = [
     name: 'if',
     type: CARD_TYPES.ROUTINE,
     cardId: `${Math.random()}`,
+    conditionExp: 8,
+    rangeExp: 4,
+    slots: [],
   },
   {
     name: 'atk1',
     type: CARD_TYPES.STAT_MOD,
     cardId: `${Math.random()}`,
+    exp: 1,
   },
   {
     name: 'atk2',
     type: CARD_TYPES.STAT_MOD,
     cardId: `${Math.random()}`,
+    exp: 1,
   },
   {
     name: 'block1',
     type: CARD_TYPES.STAT_MOD,
     cardId: `${Math.random()}`,
+    exp: 1,
   },
   {
     name: 'atk',
     type: CARD_TYPES.ROUTINE,
     cardId: `${Math.random()}`,
+    exp: 1,
   },
   {
     name: 'block',
     type: CARD_TYPES.ROUTINE,
     cardId: `${Math.random()}`,
+    exp: 1,
   },
 ];

@@ -4,9 +4,10 @@ import Card from './Card';
 
 const ShopBench = ({ isDropDisabled, selectedCard, cards = [], id }) => {
   console.log(selectedCard);
-  return <div className="column col-6">
+  return <div className="column col-4">
     <div className="divider" data-content={id.toUpperCase()} />
     <Droppable
+        key={id}
         droppableId={id}
         direction="horizontal"
         isCombineEnabled
@@ -16,13 +17,13 @@ const ShopBench = ({ isDropDisabled, selectedCard, cards = [], id }) => {
           <div className="menu" {...provided.droppableProps} ref={provided.innerRef}>
             {cards.map(({ name, type, cardId}, index) => (
               <Card
-                key={name+cardId}
+                key={name+':'+cardId}
                 cardId={cardId}
                 parentId={id}
                 name={name}
                 index={index}
                 type={type}
-                isPickedUp={selectedCard?.name === name}/>
+                isPickedUp={selectedCard?.cardId === cardId}/>
             ))}
             {provided.placeholder}
           </div>

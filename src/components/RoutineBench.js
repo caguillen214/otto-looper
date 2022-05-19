@@ -12,14 +12,16 @@ const RoutineBench = ({ isDropDisabled, selectedCard, cards = [], id }) => {
     }
 
     return (
-    <div className="column col-6 ">
+    <div className="column col-7 ">
       <div className="divider" data-content={id.toUpperCase()} />
       <Droppable
+        key={id}
         droppableId={id}
         isCombineEnabled
         direction="horizontal"
         isDropDisabled={getDropDisabledStatus(isDropDisabled)}>
-            {provided => {
+            {(provided, snapshot) => {
+                console.log("routine: "+snapshot.isDraggingOver)
             return (
                 <div className="menu hero-list routine-bench " {...provided.droppableProps} ref={provided.innerRef}>
                    {cards.map((props, index) => {

@@ -28,7 +28,7 @@ footer {
 }
 
 .menu {
-  min-height: 150px;
+  min-height: 125px;
   padding-top: 25px;
   transform: none;
   z-index: inherit;
@@ -52,7 +52,6 @@ footer {
 
 .character-bench, .character-card {
   border: solid blue;
-  height: 150px;
 }
 
 .routine-bench, .routine-card {

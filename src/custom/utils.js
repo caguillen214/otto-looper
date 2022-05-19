@@ -1,5 +1,5 @@
 import React from 'react';
-import { CARDS, CARD_TYPES, COMICS } from './data';
+import { BENCHES, CARDS, CARD_TYPES, COMICS } from './data';
 import { moveIfConditionCard } from './fetcher';
 
 // the Knuth shuffle algorithm
@@ -57,16 +57,43 @@ export const makeExpBars = (exp, level) => {
 }
 
 const moveIfCond = async (state, source, destination, combine) => {
-  console.log(state);
-  console.log(source);
-  console.log(destination);
-  console.log(combine);
+  // console.log(state);
+  // console.log(source);
+  // console.log(destination);
+  // console.log(combine);
+  if (combine) {
+    const srcListClone = state[source.droppableId].slots
+    const [movedElement] = srcListClone.splice(source.index, 1);
+    if (movedElement.name !== 'if') {
+      // const sourceCardId = source.droppableId.split(':')[1];
+      const combineCardId = combine.draggableId.split(':')[1];
+      // const sourceIfCard = state[source.droppableId].slots.find((card) => {
+      //     return card.cardId === sourceCardId;
+      // });
+      const combineIfCard = state[BENCHES.ROUTINE].slots.find((card) => {
+          return card.cardId === combineCardId;
+      }); 
+      // const srcListClone = [...sourceIfCard.slots];
+      const combineListClone = [...combineIfCard.slots];
+      // const [movedElement] = srcListClone.splice(source.index, 1);
+      combineListClone.splice(combine.index, 0, movedElement);
+      // sourceIfCard.slots = srcListClone;
+      combineIfCard.slots = combineListClone;
+      return Promise.resolve({
+          ...state
+      });
+    } else {
+
+    }
+    console.log(movedElement);
+    return state;
+  }
   return await moveIfConditionCard(state, source, destination);
 }
 
 // method to handle to the heroe cards movement
 export const move = (state, source, destination, combine) => {
-  if (source.droppableId.startsWith('if-slots')) {
+  if (source?.droppableId.startsWith('if-slots') || combine?.draggableId.startsWith('if')) {
     const resp = moveIfCond(state, source, destination, combine);
     return resp;
   }

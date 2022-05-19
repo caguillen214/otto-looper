@@ -74,7 +74,8 @@ function App() {
     }));
   };
 
-  const onDragStart = useCallback(({ source }) => {
+  const onDragStart = useCallback((prop) => {
+    const { source } = prop;
     setGameData((state) => {
       const selectedCard =  state[source.droppableId]?.slots[source.index];
       return {
@@ -95,7 +96,8 @@ function App() {
     }
 
     setGameData((state) => {
-      return {...state, ...move(state, source, destination, combine)};
+      let resp = move(state, source, destination, combine);//.then((thing) => {resp = thing})
+      return {...state, ...resp};
     });
   }, []);
   

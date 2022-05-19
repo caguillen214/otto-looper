@@ -6,11 +6,12 @@ export const startNewGame = async () => {
     const state = {
         [BENCHES.SHOP]: {
             id: BENCHES.SHOP,
-            slots: shuffle(CARDS).map((c) => ({...c, cardId: Math.random()})),
+            slots: shuffle(CARDS).map((c) => ({...c, cardId: `${Math.random()}`})),
         },
         [BENCHES.ROUTINE]: {
             id: BENCHES.ROUTINE,
-            slots: [EMPTY_CARD, constants.IF_CARD_WITH_ONE_SUB, EMPTY_CARD, constants.IF_CARD_WITH_ONE_SUB2, EMPTY_CARD, EMPTY_CARD]
+            // slots: [EMPTY_CARD, constants.IF_CARD_WITH_ONE_SUB, EMPTY_CARD, constants.IF_CARD_WITH_ONE_SUB2, EMPTY_CARD, EMPTY_CARD]
+            slots: [EMPTY_CARD, constants.IF_CARD_WITH_ONE_SUB, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD]
             // slots: [EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD]
         },
         [BENCHES.CHARACTER]: {

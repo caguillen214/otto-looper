@@ -12,7 +12,7 @@ const CharacterBench = ({ isDropDisabled, selectedCard, cards = [], id, characte
         return isDragDisabled || selectedCard?.type !== CARD_TYPES.STAT_MOD;
     }
     return (
-    <div className="column col-6 ">
+    <div className="column col-5 ">
       <div className="divider" data-content={id.toUpperCase()} />
       <div className="character-stats-container">
           <div>Attack: {characterStats[constants.ATTACK]}</div>
@@ -22,6 +22,7 @@ const CharacterBench = ({ isDropDisabled, selectedCard, cards = [], id, characte
           <div>Heal: {characterStats[constants.HEAL]}</div>
       </div>
       <Droppable
+        key={id}
         droppableId={id}
         direction="horizontal"
         isCombineEnabled
@@ -31,7 +32,7 @@ const CharacterBench = ({ isDropDisabled, selectedCard, cards = [], id, characte
                 <div className="menu character-bench " {...provided.droppableProps} ref={provided.innerRef}>
                     {cards.map(({ name, type, exp, tier, cardId }, index) => (
                         <Card
-                            key={name+index}
+                            key={name+':'+index}
                             name={name}
                             index={index}
                             cardId={cardId}
