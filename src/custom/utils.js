@@ -1,6 +1,6 @@
 import React from 'react';
 import { BENCHES, CARDS, CARD_TYPES, COMICS } from './data';
-import { moveIfConditionCard } from './fetcher';
+import { moveIfConditionCard, purchaseCard, purchaseRoutineCard, sellCard } from './fetcher';
 
 // the Knuth shuffle algorithm
 export const shuffle = (array) => {
@@ -92,32 +92,72 @@ const moveIfCond = async (state, source, destination, combine) => {
 }
 
 // method to handle to the heroe cards movement
-export const move = (state, source, destination, combine) => {
-  if (source?.droppableId.startsWith('if-slots') || combine?.draggableId.startsWith('if')) {
-    const resp = moveIfCond(state, source, destination, combine);
-    return resp;
-  }
+export const move = async (state, source, destination, combine) => {
+  // if (source?.droppableId.startsWith('if-slots') || combine?.draggableId.startsWith('if')) {
+  //   const resp = moveIfCond(state, source, destination, combine);
+  //   return resp;
+  // }
   const srcListClone = [...state[source.droppableId].slots];
+  const [movedElement] = srcListClone.splice(source.index, 1);
+  let shouldDoSplice = true;
   var destListClone;
   if (combine) {
+    destListClone = [...state[combine.droppableId].slots]
+    destination = {droppableId: combine.droppableId}
     if (combine.draggableId.includes(CARD_TYPES.EMPTY)) {
-      destListClone = [...state[combine.droppableId].slots]
-      destListClone.splice(source.index, 1);
+      if (source.droppableId === destination.droppableId) {
+        return Promise.resolve({selectedCard: null});
+      }
       // TODO: Change how this works it is a terrible way to get index
       const index = combine.draggableId.charAt(combine.draggableId.length - 1);
-      destination = {droppableId: combine.droppableId, index};
+      destListClone.splice(index, 1);
+      destination = {...destination, index};
+    } else {
+      const combineCardId = combine.draggableId.split(':')[1];
+      const combinedCard = destListClone.find((card) => {
+        return card.cardId === combineCardId;
+      }); 
+      console.log(combinedCard)
+      if (movedElement.name !== combinedCard.name) {
+        return Promise.resolve({selectedCard: null});
+      } else {
+        combinedCard.exp += movedElement.exp;
+        combinedCard.conditionExp += movedElement.conditionExp;
+        combinedCard.rangeExp += movedElement.rangeExp;
+        shouldDoSplice = false;
+      }
     }
   } else {
-    destListClone =
-      source.droppableId === destination.droppableId
-        ? srcListClone
+      destListClone = source.droppableId === destination.droppableId 
+        ? srcListClone 
         : [...state[destination.droppableId].slots];
   }
-  const [movedElement] = srcListClone.splice(source.index, 1);
-  destListClone.splice(destination.index, 0, movedElement);
 
+  if (shouldDoSplice) {
+    destListClone.splice(destination.index, 0, movedElement);
+  }
 
-  return {
+  if (!combine && source.droppableId !== destination.droppableId ) {
+    // Remove an empty slot if needed
+    destListClone.splice(destListClone.findIndex((card) => {
+      return card.type === 'empty'//CARD_TYPES.EMPTY
+    }), 1);
+  }
+
+  let otherResp = {};
+  if (destination.droppableId === BENCHES.DISCARD) {
+    if (source.droppableId === BENCHES.SHOP) {
+      return Promise.resolve({selectedCard: null});
+    }
+    otherResp = await sellCard(state, srcListClone, source.droppableId === BENCHES.CHARACTER)
+  }
+  if (source.droppableId === BENCHES.SHOP && destination.droppableId) {
+    console.log(destListClone)
+    otherResp = await purchaseCard(state, destListClone, destination.droppableId === BENCHES.CHARACTER)
+  }
+
+  return Promise.resolve({
+    ...otherResp,
     selectedCard: null,
     [source.droppableId]: {
       ...source,
@@ -131,7 +171,7 @@ export const move = (state, source, destination, combine) => {
             slots: destListClone,
           }
         }),
-  };
+  });
 };
 
 // method to get time left

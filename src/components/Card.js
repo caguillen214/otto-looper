@@ -5,11 +5,11 @@ import { makeExpBars } from '../custom/utils';
 import EmptySlot from './EmptySlot';
 
 const Card = ({ name, type, index, exp, tier, cardId, parentId, emptyText, isPickedUp, ifConditionCards = [] }) => {
-  exp = ~~(6 * Math.random()) + 1;
+  // exp = ~~(6 * Math.random()) + 1;
   const level = ~~(exp / 3) + 1;
-  const emptyCard = type === CARD_TYPES.EMPTY ? <EmptySlot parentId={parentId} index={index} key={index} emptyText={emptyText} /> : null;
+  const emptyCard = type === CARD_TYPES.EMPTY ? <EmptySlot parentId={parentId} index={index} key={index} emptyText={emptyText} type={type}/> : null;
 
-  const cardClass = 'card ' + (isPickedUp ? 'placeholder-card' : (type === CARD_TYPES.ROUTINE ? 'routine-card': 'character-card'));
+  const cardClass = 'card ' + (isPickedUp ? 'placeholder-card' : `${type}-card`);
 
   return ( emptyCard ??
     <Draggable key={name} draggableId={name+':'+cardId} index={index} type={type}>

@@ -8,8 +8,9 @@ import { CARD_TYPES, EMPTY_CARD } from '../custom/data';
 
 const CharacterBench = ({ isDropDisabled, selectedCard, cards = [], id, characterStats = {}}) => {
     const MAX_SLOTS = 5;
+    const emptySlots = Array(MAX_SLOTS - cards.length).fill(EMPTY_CARD);
     const getDropDisabledStatus = (isDragDisabled) => {
-        return isDragDisabled || selectedCard?.type !== CARD_TYPES.STAT_MOD;
+        return isDragDisabled || selectedCard?.type !== CARD_TYPES.CHARACTER;
     }
     return (
     <div className="column col-5 ">
@@ -18,7 +19,7 @@ const CharacterBench = ({ isDropDisabled, selectedCard, cards = [], id, characte
           <div>Attack: {characterStats[constants.ATTACK]}</div>
           <div>Dexterity: {characterStats[constants.DEXTERITY]}</div>
           <div>Health: {characterStats[constants.HEALTH]}</div>
-          <div>Gold: {characterStats[constants.GOLD]}</div>
+          <div>Income: {characterStats[constants.GOLD]}</div>
           <div>Heal: {characterStats[constants.HEAL]}</div>
       </div>
       <Droppable
@@ -30,7 +31,7 @@ const CharacterBench = ({ isDropDisabled, selectedCard, cards = [], id, characte
             {provided => {
             return (
                 <div className="menu character-bench " {...provided.droppableProps} ref={provided.innerRef}>
-                    {cards.map(({ name, type, exp, tier, cardId }, index) => (
+                    {[...cards, ...emptySlots].map(({ name, type, exp, tier, cardId }, index) => (
                         <Card
                             key={name+':'+index}
                             name={name}

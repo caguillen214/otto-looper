@@ -15,6 +15,8 @@ export const BENCHES = {
   SHOP: 'shop',
   CHARACTER: 'character',
   ROUTINE: 'routine',
+  COMMAND: 'command',
+  DISCARD: 'discard',
 };
 
 export const COMICS = {
@@ -24,7 +26,8 @@ export const COMICS = {
 
 export const CARD_TYPES = {
   ROUTINE: 'routine',
-  STAT_MOD: 'stat_mod',
+  COMMAND: 'command',
+  CHARACTER: 'character',
   EMPTY: 'empty',
 }
 
@@ -35,30 +38,30 @@ export const EMPTY_CARD = {
 
 export const IF_CARD_WITH_ONE_SUB = {
   name: 'if',
-  type: CARD_TYPES.ROUTINE,
+  type: CARD_TYPES.COMMAND,
   cardId: `${Math.random()}`,
   slots: [
     // {
     //   name: 'atk',
-    //   type: CARD_TYPES.ROUTINE,
+    //   type: CARD_TYPES.COMMAND,
     //   cardId: `${Math.random()}`,
     //   exp: 1,
     // }
   ],
   conditionExp: 1,
-  rangeExp: 1,
+  rangeExp: 4,
 };
 export const IF_CARD_WITH_ONE_SUB2 = {
   name: 'if',
-  type: CARD_TYPES.ROUTINE,
+  type: CARD_TYPES.COMMAND,
   cardId: `${Math.random()}`,
   slots: [
-    {
-      name: 'block',
-      type: CARD_TYPES.ROUTINE,
-      cardId: `${Math.random()}`,
-      exp: 1,
-    }
+    // {
+    //   name: 'block',
+    //   type: CARD_TYPES.ROUTINE,
+    //   cardId: `${Math.random()}`,
+    //   exp: 1,
+    // }
   ],
   conditionExp: 4,
   rangeExp: 1,
@@ -67,29 +70,53 @@ export const IF_CARD_WITH_ONE_SUB2 = {
 export const CARDS = [
   {
     name: 'if',
-    type: CARD_TYPES.ROUTINE,
+    type: CARD_TYPES.COMMAND,
     cardId: `${Math.random()}`,
     conditionExp: 8,
     rangeExp: 4,
     slots: [],
+  },  
+  {
+    name: 'loop',
+    type: CARD_TYPES.COMMAND,
+    cardId: `${Math.random()}`,
+    counterExp: 3,
+    rangeExp: 4,
   },
   {
     name: 'atk1',
-    type: CARD_TYPES.STAT_MOD,
+    type: CARD_TYPES.CHARACTER,
     cardId: `${Math.random()}`,
     exp: 1,
+    attack: 1,
+  },
+  {
+    name: 'health1',
+    type: CARD_TYPES.CHARACTER,
+    cardId: `${Math.random()}`,
+    exp: 1,
+    health: 1,
+  },
+  {
+    name: 'gold1',
+    type: CARD_TYPES.CHARACTER,
+    cardId: `${Math.random()}`,
+    exp: 1,
+    gold: 1,
   },
   {
     name: 'atk2',
-    type: CARD_TYPES.STAT_MOD,
+    type: CARD_TYPES.CHARACTER,
     cardId: `${Math.random()}`,
     exp: 1,
+    attack: 2,
   },
   {
     name: 'block1',
-    type: CARD_TYPES.STAT_MOD,
+    type: CARD_TYPES.CHARACTER,
     cardId: `${Math.random()}`,
     exp: 1,
+    dexterity: 1,
   },
   {
     name: 'atk',
@@ -99,6 +126,12 @@ export const CARDS = [
   },
   {
     name: 'block',
+    type: CARD_TYPES.ROUTINE,
+    cardId: `${Math.random()}`,
+    exp: 1,
+  },
+  {
+    name: 'heal',
     type: CARD_TYPES.ROUTINE,
     cardId: `${Math.random()}`,
     exp: 1,
