@@ -6,21 +6,27 @@ import EmptySlot from './EmptySlot';
 import * as constants from "../custom/data";
 import { CARD_TYPES, EMPTY_CARD } from '../custom/data';
 
-const CharacterBench = ({ isDropDisabled, selectedCard, cards = [], id, characterStats = {}}) => {
+const CharacterBench = ({ isDropDisabled, selectedCard, cards = [], id, characterStats = {}, level}) => {
     const MAX_SLOTS = 5;
     const emptySlots = Array(MAX_SLOTS - cards.length).fill(EMPTY_CARD);
     const getDropDisabledStatus = (isDragDisabled) => {
         return isDragDisabled || selectedCard?.type !== CARD_TYPES.CHARACTER;
     }
     return (
-    <div className="column col-5 ">
+    <div className="column col-4 ">
       <div className="divider" data-content={id.toUpperCase()} />
       <div className="character-stats-container">
-          <div>Attack: {characterStats[constants.ATTACK]}</div>
-          <div>Dexterity: {characterStats[constants.DEXTERITY]}</div>
-          <div>Health: {characterStats[constants.HEALTH]}</div>
-          <div>Income: {characterStats[constants.GOLD]}</div>
-          <div>Heal: {characterStats[constants.HEAL]}</div>
+          <div>
+            <div>Attack: {characterStats[constants.ATTACK]}</div>
+            <div>Level: {level}</div>
+            <div>Dexterity: {characterStats[constants.DEXTERITY]}</div>
+          </div>
+          <img src={`./misc/otto.png`} style={{width: '150px', height: '200px'}} />
+          <div>
+            <div>Health: {characterStats[constants.HEALTH]}</div>
+            <div>Income: {characterStats[constants.GOLD]}</div>
+            <div>Heal: {characterStats[constants.HEAL]}</div>
+          </div>
       </div>
       <Droppable
         key={id}
@@ -43,7 +49,7 @@ const CharacterBench = ({ isDropDisabled, selectedCard, cards = [], id, characte
                             tier={tier}
                             emptyText="Empty"/>
                     ))}
-                    {provided.placeholder}
+                    {/* {provided.placeholder} */}
                 </div>
             );
             }}

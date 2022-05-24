@@ -11,31 +11,39 @@ const LoopCard = (props) => {
   const loopRangeLevel = ~~(rangeExp / 3) + 1;
   const loopCounterLevel = ~~(counterExp / 3) + 1;
  
- 
-  const getDropDisabledStatus = () => {
-      return slots.length >= loopCounterLevel;
-  }
-
-  const emptyConditionSlots = () => {
-    const emptySlots = [];
-    for (let i = slots.length; i < loopCounterLevel; i++) {
-      emptySlots.push(<div className='empty-if-condition-slot' key={i}></div>)
-    }
-    return emptySlots;
-  }
-
-  const dashOrSolid = getDropDisabledStatus() ? 'solid' : 'dashed'
-
   const rangeBarWidth = `calc(${(loopRangeLevel)*100}% + ${((loopRangeLevel) * 3)}px)`
   const rangeBarLeft = `calc(${(-loopRangeLevel+1)*100}% - ${((loopRangeLevel) * 2)}px)`
+
+  
+  const showCombineHover = (combineTargetFor) => {
+    return combineTargetFor?.includes(name) ? 'combined-hover' : '';
+  }
 
   return (
     // <div className={cardClass} onMouseOver={()=>{console.log('over')}}>
       <Draggable  key={name} draggableId={name+':'+cardId} index={index} type={type}>
-        {provided => {
+        {(provided, snapshot) => {
+          if(!snapshot.isDragging) {
+            provided.draggableProps = {
+                ...provided.draggableProps,
+                style: {
+                  ...provided.draggableProps.style,
+                  transform: 'none !important'
+                }
+              }
+          }
+          if(snapshot.isDropAnimating) {
+            provided.draggableProps = {
+                ...provided.draggableProps,
+                style: {
+                  ...provided.draggableProps.style,
+                  transform: 'none'
+                }
+              }
+          }
           return (
             <div 
-                className={cardClass}
+                className={`${cardClass} ${showCombineHover(snapshot.combineTargetFor)}`}     
                 ref={provided.innerRef}
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}>

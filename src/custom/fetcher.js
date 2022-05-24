@@ -10,18 +10,22 @@ export const startNewGame = async () => {
         },
         [BENCHES.ROUTINE]: {
             id: BENCHES.ROUTINE,
-            // slots: [EMPTY_CARD, constants.IF_CARD_WITH_ONE_SUB, EMPTY_CARD, constants.IF_CARD_WITH_ONE_SUB2, EMPTY_CARD, EMPTY_CARD]
-            // slots: [EMPTY_CARD, constants.IF_CARD_WITH_ONE_SUB, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD]
-            slots: [EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD]
+            // slots: [EMPTY_CARD,  EMPTY_CARD, constants.IF_CARD_WITH_ONE_SUB, EMPTY_CARD, constants.IF_CARD_WITH_ONE_SUB2, EMPTY_CARD, EMPTY_CARD]
+            // slots: [EMPTY_CARD, EMPTY_CARD, constants.IF_CARD_WITH_ONE_SUB, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD]
+            slots: [EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD]
         },      
         [BENCHES.COMMAND]: {
             id: BENCHES.COMMAND,
-            slots: [EMPTY_CARD, constants.IF_CARD_WITH_ONE_SUB, EMPTY_CARD, EMPTY_CARD,constants.IF_CARD_WITH_ONE_SUB2, EMPTY_CARD]
+            slots: [EMPTY_CARD, EMPTY_CARD, constants.IF_CARD_WITH_ONE_SUB, EMPTY_CARD, EMPTY_CARD,constants.IF_CARD_WITH_ONE_SUB2, EMPTY_CARD]
             // slots: [EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD]
         },
         [BENCHES.CHARACTER]: {
             id: BENCHES.CHARACTER,
             slots: [EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD]
+        },
+        [BENCHES.ULT]: {
+            id: BENCHES.ULT,
+            slots: []
         },
         [constants.CHARACTER_STATS]: {
             [constants.ATTACK]: 2,
@@ -31,7 +35,8 @@ export const startNewGame = async () => {
             [constants.HEAL]: 2,
         },
         gameId: '',
-        turnCounter: 1,
+        turnCount: 1,
+        winCount: 0,
         selectedCard: null,
         gameState: GAME_STATE.PLAYING,
         timeLeft: 0,
@@ -43,7 +48,7 @@ export const rollShop = async (gold) => { // TODO dont actually use gold here
     return Promise.resolve({
         [BENCHES.SHOP]: {
             id: BENCHES.SHOP,
-            slots: shuffle(CARDS).slice(0, 5).map((c) => ({...c, cardId: Math.random()})),
+            slots: shuffle(CARDS).slice(0, 5).map((c) => ({...c, cardId: ''+Math.random()})),
         },
         gold: gold - 1,
     });
@@ -100,6 +105,9 @@ export const sellCard = async (state, characterCards, isCharacterBuy) => {
         if (card.heal) {
             baseStats.heal += card.heal
         }
+        if (card.gold) {
+            baseStats.gold += card.gold
+        }
     })
     console.log(state);
     return await Promise.resolve({
@@ -133,7 +141,7 @@ export const purchaseCard = async (state, characterCards, isCharacterBuy) => { /
             baseStats.heal += card.heal
         }
         if (card.gold) {
-            baseStats.heal += card.heal
+            baseStats.gold += card.gold
         }
     })
     console.log(state);

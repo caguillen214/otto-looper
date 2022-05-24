@@ -3,12 +3,12 @@ import { Droppable} from 'react-beautiful-dnd';
 import { EMPTY_CARD } from '../custom/data';
 import Card from './Card';
 
-const ShopBench = ({ isDropDisabled, selectedCard, cards = [], id, currentGold}) => {
+const ShopBench = ({ isDropDisabled, selectedCard, cards = [], id}) => {
     const MAX_SLOTS = 5;
     const emptySlots = Array(MAX_SLOTS - cards.length).fill(EMPTY_CARD);
-  return <div className="column col-5">
+  return <div className="column col-10">
     <div className="divider" data-content={id.toUpperCase()} />
-    <b>Current Gold: {currentGold}</b>
+    
     <Droppable
         key={id}
         droppableId={id}
@@ -17,9 +17,10 @@ const ShopBench = ({ isDropDisabled, selectedCard, cards = [], id, currentGold})
         isDropDisabled={isDropDisabled}>
       {provided => {
         return (
-          <div className="menu" {...provided.droppableProps} ref={provided.innerRef}>
+          <div className="menu shop-bench" {...provided.droppableProps} ref={provided.innerRef}>
             {[...cards, ...emptySlots].map(({ name, type, cardId}, index) => (
-              <Card
+            //   <div class="something">
+                  <Card
                 key={name+':'+ (cardId??index)}
                 cardId={cardId}
                 parentId={id}
@@ -27,6 +28,7 @@ const ShopBench = ({ isDropDisabled, selectedCard, cards = [], id, currentGold})
                 index={index}
                 type={type}
                 isPickedUp={selectedCard?.cardId === cardId}/>
+                // </div>
             ))}
             {provided.placeholder}
           </div>

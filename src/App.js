@@ -14,6 +14,7 @@ import Footer from './components/Footer';
 import { rollShop, startNewGame } from './custom/fetcher';
 import CommandBench from './components/CommandBench';
 import DiscardBench from './components/DiscardBench';
+import UltBench from './components/UltBench';
 
 const initialState = {
   // we initialize the state by populating the bench with a shuffled collection of heroes
@@ -23,11 +24,11 @@ const initialState = {
   },
   [BENCHES.ROUTINE]: {
     id: BENCHES.ROUTINE,
-    slots: [EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD]
+    slots: [EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD]
   },  
   [BENCHES.COMMAND]: {
     id: BENCHES.COMMAND,
-    slots: [EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD]
+    slots: [EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD]
   },
   [BENCHES.CHARACTER]: {
     id: BENCHES.CHARACTER,
@@ -35,6 +36,10 @@ const initialState = {
   },
   [BENCHES.DISCARD]: {
     id: BENCHES.DISCARD,
+    slots: []
+  },
+  [BENCHES.ULT]: {
+    id: BENCHES.ULT,
     slots: []
   },
   [constants.CHARACTER_STATS]: {
@@ -46,7 +51,8 @@ const initialState = {
   },
   gold: 10,
   gameId: '',
-  turnCounter: 1,
+  turnCount: 1,
+  winCount: 0,
   selectedCard: null,
   gameState: GAME_STATE.READY,
   timeLeft: 0,
@@ -105,12 +111,9 @@ function App() {
 
   const onDragEnd = ({ source, destination, combine }) => {
     // the only one that is required
-    if (!destination && !combine) {
-      console.log('no dest')
+    if (!combine) {
+      setGameData((state) => ({...state, selectedCard: null}))
       return;
-    }
-    if (combine) {
-      // debugger;
     }
     move(gameData, source, destination, combine).then((resp) => {
       setGameData((state) => {
@@ -128,50 +131,64 @@ function App() {
   const isDropDisabled = gameState === GAME_STATE.DONE;
   return (
     <>
-      <Header gameState={gameState} timeLeft={timeLeft} endGame={endGame} />
+      <Header
+        gameState={gameState}
+        timeLeft={timeLeft}
+        endGame={endGame}
+        currentGold={gameData.gold}
+        turnCount={gameData.turnCount}
+        winCount={gameData.winCount}/>
       {( true || gameData.gameState === GAME_STATE.PLAYING ||
         gameData.gameState === GAME_STATE.DONE) && (
         <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
           <div className="container">
             <div className="columns">
-              <div className="column col-7 ">
-                <div className="divider" data-content={'ROUTINE'} />
-                <CommandBench
-                  id={BENCHES.COMMAND}
+              <div className="columns column col-8 routine-container">
+                <div className="divider col-12" data-content={'ROUTINE'} />
+                <div className="column col-10">
+                  <CommandBench
+                    id={BENCHES.COMMAND}
+                    selectedCard={gameData.selectedCard}
+                    cards={gameData[BENCHES.COMMAND].slots}
+                    isDropDisabled={isDropDisabled}
+                  />
+                  <RoutineBench
+                    id={BENCHES.ROUTINE}
+                    selectedCard={gameData.selectedCard}
+                    cards={gameData[BENCHES.ROUTINE].slots}
+                    isDropDisabled={isDropDisabled}
+                  />
+                </div>
+                <UltBench
+                  id={BENCHES.ULT}
+                  cards={gameData[BENCHES.ULT].slots}
                   selectedCard={gameData.selectedCard}
-                  cards={gameData[BENCHES.COMMAND].slots}
-                  isDropDisabled={isDropDisabled}
-                />
-                <RoutineBench
-                  id={BENCHES.ROUTINE}
-                  selectedCard={gameData.selectedCard}
-                  cards={gameData[BENCHES.ROUTINE].slots}
-                  isDropDisabled={isDropDisabled}
-                />
+                  isDropDisabled={isDropDisabled} />
+                <div className="columns column col-12">
+                  <ShopBench 
+                    id={BENCHES.SHOP}
+                    selectedCard={gameData.selectedCard}
+                    cards={gameData[BENCHES.SHOP].slots}
+                    isDropDisabled={isDropDisabled} />
+                  <DiscardBench 
+                    id={BENCHES.DISCARD}
+                    selectedCard={gameData.selectedCard}
+                    isDropDisabled={isDropDisabled} />
+                </div>
+                <div className='column col-12' style={{marginTop: '16px'}}>
+                  <button onClick={onRerollShop}>Reroll Shop</button>
+                </div>
               </div>
               <CharacterBench
                 id={BENCHES.CHARACTER}
                 characterStats={gameData[constants.CHARACTER_STATS]}
                 selectedCard={gameData.selectedCard}
                 cards={gameData[BENCHES.CHARACTER].slots}
+                level={~~(gameData.turnCount / 3)+1}
                 isDropDisabled={isDropDisabled}
               />
             </div>
-            <div className='column col-12' style={{marginTop: '16px'}}>
-              <button onClick={onRerollShop}>Reroll Shop</button>
-            </div>
-            <div className="columns">
-              <ShopBench 
-                id={BENCHES.SHOP}
-                currentGold={gameData.gold}
-                selectedCard={gameData.selectedCard}
-                cards={gameData[BENCHES.SHOP].slots}
-                isDropDisabled={isDropDisabled} />
-              <DiscardBench 
-                id={BENCHES.DISCARD}
-                selectedCard={gameData.selectedCard}
-                isDropDisabled={isDropDisabled} />
-              </div>
+
           </div>
         </DragDropContext>
       )}

@@ -7,7 +7,7 @@ import IfCard from './IfCard';
 import LoopCard from './LoopCard';
 
 const CommandBench = ({ isDropDisabled, selectedCard, cards = [], id }) => {
-    const MAX_SLOTS = 6;
+    const MAX_SLOTS = 7;
     const emptySlots = Array(MAX_SLOTS - cards.length).fill(EMPTY_CARD);
     const getDropDisabledStatus = (isDragDisabled) => {
         return isDragDisabled || selectedCard?.type !== CARD_TYPES.COMMAND;
@@ -25,7 +25,6 @@ const CommandBench = ({ isDropDisabled, selectedCard, cards = [], id }) => {
         direction="horizontal"
         isDropDisabled={getDropDisabledStatus(isDropDisabled)}>
             {(provided, snapshot) => {
-                console.log("command: "+snapshot.isDraggingOver)
             return (
                 <div className="menu hero-list command-bench " {...provided.droppableProps} ref={provided.innerRef}>
                    {[...cards, ...emptySlots].map((props, index) => {
@@ -67,7 +66,6 @@ const CommandBench = ({ isDropDisabled, selectedCard, cards = [], id }) => {
                             tier={tier}
                             emptyText="EMPTY"/>
                     })}
-                    {provided.placeholder}
                 </div>
             );
             }}

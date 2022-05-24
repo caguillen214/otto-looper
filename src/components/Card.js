@@ -11,11 +11,43 @@ const Card = ({ name, type, index, exp, tier, cardId, parentId, emptyText, isPic
 
   const cardClass = 'card ' + (isPickedUp ? 'placeholder-card' : `${type}-card`);
 
+  const showCombineHover = (combineTargetFor) => {
+    return combineTargetFor?.includes(name) ? 'combined-hover' : '';
+  }
+
   return ( emptyCard ??
     <Draggable key={name} draggableId={name+':'+cardId} index={index} type={type}>
-      {(provided) => {
+      {(provided, snapshot) => {
+        if(!snapshot.isDragging) {
+          provided.draggableProps = {
+              ...provided.draggableProps,
+              style: {
+                ...provided.draggableProps.style,
+                transform: 'none !important'
+              }
+            }
+        }
+        if(snapshot.isDropAnimating) {
+          provided.draggableProps = {
+              ...provided.draggableProps,
+              style: {
+                ...provided.draggableProps.style,
+                transform: 'none'
+              }
+            }
+        }
+        // if (snapshot.draggingOver) {
+        //   console.log(provided)
+          // provided.draggableProps = {
+          //   ...provided.draggableProps,
+          //   style: {
+          //     ...provided.draggableProps.style,
+          //     left: provided.draggableProps.style.left - 150
+          //   }
+          // }
+        // }
         return (
-          <div className={cardClass}     
+          <div className={`${cardClass} ${showCombineHover(snapshot.combineTargetFor)}`}     
               ref={provided.innerRef}
               {...provided.draggableProps}
               {...provided.dragHandleProps}>

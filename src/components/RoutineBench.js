@@ -6,7 +6,7 @@ import { CARD_TYPES, EMPTY_CARD } from '../custom/data';
 import IfCard from './IfCard';
 
 const RoutineBench = ({ isDropDisabled, selectedCard, cards = [], id }) => {
-    const MAX_SLOTS = 6;
+    const MAX_SLOTS = 7;
     const emptySlots = Array(MAX_SLOTS - cards.length).fill(EMPTY_CARD);
     const getDropDisabledStatus = (isDragDisabled) => {
         return isDragDisabled || selectedCard?.type !== CARD_TYPES.ROUTINE;
@@ -22,7 +22,6 @@ const RoutineBench = ({ isDropDisabled, selectedCard, cards = [], id }) => {
         direction="horizontal"
         isDropDisabled={getDropDisabledStatus(isDropDisabled)}>
             {(provided, snapshot) => {
-                console.log("routine: "+snapshot.isDraggingOver)
             return (
                 <div className="menu hero-list routine-bench " {...provided.droppableProps} ref={provided.innerRef}>
                    {[...cards, ...emptySlots].map((props, index) => {
@@ -50,7 +49,7 @@ const RoutineBench = ({ isDropDisabled, selectedCard, cards = [], id }) => {
                             tier={tier}
                             emptyText="IDLE"/>
                     })}
-                    {provided.placeholder}
+                    {/* {provided.placeholder} */}
                 </div>
             );
             }}

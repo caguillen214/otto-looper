@@ -17,6 +17,7 @@ export const BENCHES = {
   ROUTINE: 'routine',
   COMMAND: 'command',
   DISCARD: 'discard',
+  ULT: 'ult',
 };
 
 export const COMICS = {
@@ -29,6 +30,7 @@ export const CARD_TYPES = {
   COMMAND: 'command',
   CHARACTER: 'character',
   EMPTY: 'empty',
+  ULT: 'ult',
 }
 
 export const EMPTY_CARD = {
@@ -72,16 +74,16 @@ export const CARDS = [
     name: 'if',
     type: CARD_TYPES.COMMAND,
     cardId: `${Math.random()}`,
-    conditionExp: 8,
-    rangeExp: 4,
+    conditionExp: 1,
+    rangeExp: 1,
     slots: [],
   },  
   {
     name: 'loop',
     type: CARD_TYPES.COMMAND,
     cardId: `${Math.random()}`,
-    counterExp: 3,
-    rangeExp: 4,
+    counterExp: 1,
+    rangeExp: 1,
   },
   {
     name: 'atk1',
@@ -119,6 +121,18 @@ export const CARDS = [
     dexterity: 1,
   },
   {
+    name: 'ult1',
+    type: CARD_TYPES.ULT,
+    cardId: `${Math.random()}`,
+    exp: 1,
+  },
+  {
+    name: 'ult2',
+    type: CARD_TYPES.ULT,
+    cardId: `${Math.random()}`,
+    exp: 1,
+  },
+  {
     name: 'atk',
     type: CARD_TYPES.ROUTINE,
     cardId: `${Math.random()}`,
@@ -135,5 +149,6 @@ export const CARDS = [
     type: CARD_TYPES.ROUTINE,
     cardId: `${Math.random()}`,
     exp: 1,
+    heal: 1,
   },
 ];

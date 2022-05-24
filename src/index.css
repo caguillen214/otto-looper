@@ -13,6 +13,10 @@ footer {
   font-size: 14px;
 }
 
+.columns {
+  align-items: flex-start;
+}
+
 .statModContainer {
   display: flex;
 }
@@ -29,9 +33,14 @@ footer {
 
 .menu {
   min-height: 125px;
+  min-width: 50px;
   padding-top: 25px;
   transform: none;
   z-index: inherit;
+  box-shadow: none;
+  display: flex;
+  justify-content: space-evenly;
+  padding: 0px;
 }
 
 .card {
@@ -43,12 +52,13 @@ footer {
   /* height: 125px; */
   /* padding: 4px; */
   margin: 4px;
+  max-width: 125px;
 }
 
 .placeholder-card {
   border: dashed lightgray;
-  background: lightgray;
-  width: 5px;
+  background: rgba(211, 211, 211, 0.718);
+  /* width: 15px !important; */
 }
 
 .command-bench {
@@ -58,12 +68,14 @@ footer {
 
 .discard-bench {
   border: 1px dashed red;
-  width: 150px;
-  height: 150px;
 }
 
 .command-card {
   border: solid goldenrod;
+}
+
+.ult-card {
+  border: solid purple;
 }
 
 .character-bench {
@@ -74,19 +86,16 @@ footer {
   border: solid blue;
 }
 
-.routine-bench {
+.discard-card {
+  transform: none !important;
+}
 
+.shop-bench .card {
+  max-width: 85px;
 }
 
 .routine-card {
   border: solid green;
-}
-
-.menu {
-  box-shadow: none;
-  display: flex;
-  justify-content: space-evenly;
-  padding: 0px;
 }
 
 .empty-slot {
@@ -95,6 +104,7 @@ footer {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  /* transform: none !important; */
 }
 
 .empty-slot.routine-card {
@@ -122,8 +132,19 @@ footer {
 
 .character-stats-container {
   display: flex;
+  flex-direction: column;
   border: 1px solid lightblue;
-  justify-content: space-around;
+  justify-content: space-between;
+  padding: 8px;
+}
+
+.character-stats-container * {
+  display: flex;
+  justify-content: space-between;
+}
+
+.character-stats-container img {
+  align-self: center;
 }
 
 .command-exp-bar-container {
@@ -244,4 +265,11 @@ footer {
 }
 .command-border-color-4 {
   border-color: #008955BB;
+}
+
+@keyframes blink { 
+  50% { border-width: 2px; border-style: dashed; } 
+}
+.combined-hover { /*or other element you want*/
+   animation: blink .5s step-end infinite alternate;
 }
