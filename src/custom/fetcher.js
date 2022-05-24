@@ -6,16 +6,26 @@ export const startNewGame = async () => {
     const state = {
         [BENCHES.SHOP]: {
             id: BENCHES.SHOP,
-            slots: shuffle(CARDS).map((c) => ({...c, cardId: Math.random()})),
+            slots: shuffle(CARDS).slice(0, 5).map((c) => ({...c, cardId: `${Math.random()}`})),
         },
         [BENCHES.ROUTINE]: {
             id: BENCHES.ROUTINE,
-            slots: [EMPTY_CARD, constants.IF_CARD_WITH_ONE_SUB, EMPTY_CARD, constants.IF_CARD_WITH_ONE_SUB2, EMPTY_CARD, EMPTY_CARD]
+            // slots: [EMPTY_CARD,  EMPTY_CARD, constants.IF_CARD_WITH_ONE_SUB, EMPTY_CARD, constants.IF_CARD_WITH_ONE_SUB2, EMPTY_CARD, EMPTY_CARD]
+            // slots: [EMPTY_CARD, EMPTY_CARD, constants.IF_CARD_WITH_ONE_SUB, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD]
+            slots: [EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD]
+        },      
+        [BENCHES.COMMAND]: {
+            id: BENCHES.COMMAND,
+            slots: [EMPTY_CARD, EMPTY_CARD, constants.IF_CARD_WITH_ONE_SUB, EMPTY_CARD, EMPTY_CARD,constants.IF_CARD_WITH_ONE_SUB2, EMPTY_CARD]
             // slots: [EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD]
         },
         [BENCHES.CHARACTER]: {
             id: BENCHES.CHARACTER,
             slots: [EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD]
+        },
+        [BENCHES.ULT]: {
+            id: BENCHES.ULT,
+            slots: []
         },
         [constants.CHARACTER_STATS]: {
             [constants.ATTACK]: 2,
@@ -25,7 +35,8 @@ export const startNewGame = async () => {
             [constants.HEAL]: 2,
         },
         gameId: '',
-        turnCounter: 1,
+        turnCount: 1,
+        winCount: 0,
         selectedCard: null,
         gameState: GAME_STATE.PLAYING,
         timeLeft: 0,
@@ -37,15 +48,9 @@ export const rollShop = async (gold) => { // TODO dont actually use gold here
     return Promise.resolve({
         [BENCHES.SHOP]: {
             id: BENCHES.SHOP,
-            slots: shuffle(CARDS).slice(0, 5).map((c) => ({...c, cardId: Math.random()})),
+            slots: shuffle(CARDS).slice(0, 5).map((c) => ({...c, cardId: ''+Math.random()})),
         },
-        [constants.CHARACTER_STATS]: {
-            [constants.ATTACK]: 2,
-            [constants.DEXTERITY]: 2,
-            [constants.HEALTH]: 2,
-            [constants.GOLD]: --gold,
-            [constants.HEAL]: 2,
-        }
+        gold: gold - 1,
     });
 }
 
@@ -79,22 +84,72 @@ export const mergeCard = async () => {
     return Promise.resolve({});
 }
 
-export const purchaseRoutineCard = async () => {
-    return Promise.resolve({});
+export const sellCard = async (state, characterCards, isCharacterBuy) => {
+    const baseStats = {
+        attack: 2,
+        dexterity: 2,
+        health: 2,
+        gold: 10,
+        heal: 2,
+    };
+    characterCards.forEach((card) => {
+        if (card.attack) {
+            baseStats.attack += card.attack
+        }
+        if (card.dexterity) {
+            baseStats.dexterity += card.dexterity
+        }
+        if (card.health) {
+            baseStats.health += card.health
+        }
+        if (card.heal) {
+            baseStats.heal += card.heal
+        }
+        if (card.gold) {
+            baseStats.gold += card.gold
+        }
+    })
+    console.log(state);
+    return await Promise.resolve({
+        character_stats: {
+            ...state.character_stats,
+            ...(isCharacterBuy ? baseStats : {}),
+        },
+        gold: state.gold+1,
+    });
 }
 
-export const purchaseCharacterCard = async (gold, shopCards, purchasedCardInd) => { // TODO dont actually use gold here
-    return Promise.resolve({
-        [BENCHES.SHOP]: {
-            id: BENCHES.SHOP,
-            slots: shopCards,
-        },
-        [constants.CHARACTER_STATS]: {
-            [constants.ATTACK]: 2,
-            [constants.DEXTERITY]: 2,
-            [constants.HEALTH]: 2,
-            [constants.GOLD]: gold-3,
-            [constants.HEAL]: 2,
+export const purchaseCard = async (state, characterCards, isCharacterBuy) => { // TODO dont actually use gold here
+    const baseStats = {
+        attack: 2,
+        dexterity: 2,
+        health: 2,
+        gold: 10,
+        heal: 2,
+    };
+    characterCards.forEach((card) => {
+        if (card.attack) {
+            baseStats.attack += card.attack
         }
+        if (card.dexterity) {
+            baseStats.dexterity += card.dexterity
+        }
+        if (card.health) {
+            baseStats.health += card.health
+        }
+        if (card.heal) {
+            baseStats.heal += card.heal
+        }
+        if (card.gold) {
+            baseStats.gold += card.gold
+        }
+    })
+    console.log(state);
+    return await Promise.resolve({
+        character_stats: {
+            ...state.character_stats,
+            ...(isCharacterBuy ? baseStats : {}),
+        },
+        gold: state.gold-3,
     });
 }

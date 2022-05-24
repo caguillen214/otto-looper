@@ -5,13 +5,15 @@ import EmptySlot from './EmptySlot';
 import Card from './Card';
 import { makeExpBars } from '../custom/utils';
 
-const IfCard = (props) => {
-  const { name, type, index, conditionExp, rangeExp, tier, cardId, parentId, colorInd, slots = [] } = props;
+const LoopCard = (props) => {
+  const { name, type, index, counterExp, rangeExp, tier, cardId, parentId, slots = [], colorInd } = props;
   const cardClass = `card if-card command-border-color-${colorInd}`;
-  const ifRangeLevel = ~~(rangeExp / 3) + 1;
-  const ifConditionLevel = ~~(conditionExp / 3) + 1;
+  const loopRangeLevel = ~~(rangeExp / 3) + 1;
+  const loopCounterLevel = ~~(counterExp / 3) + 1;
+ 
+  const rangeBarWidth = `calc(${(loopRangeLevel)*100}% + ${((loopRangeLevel) * 3)}px)`
+  const rangeBarLeft = `calc(${(-loopRangeLevel+1)*100}% - ${((loopRangeLevel) * 2)}px)`
 
-  const rangeBarWidth = `calc(${(ifRangeLevel)*100}% + ${((ifRangeLevel) * 3  )}px)`
   
   const showCombineHover = (combineTargetFor) => {
     return combineTargetFor?.includes(name) ? 'combined-hover' : '';
@@ -41,18 +43,21 @@ const IfCard = (props) => {
           }
           return (
             <div 
-                className={`${cardClass}  ${showCombineHover(snapshot.combineTargetFor)}`}
+                className={`${cardClass} ${showCombineHover(snapshot.combineTargetFor)}`}     
                 ref={provided.innerRef}
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}>
               {/* <div className='if-card-container'> */}
                 
                 <div className="if-details-container" >
-                  <div>IF enemy: {ifRangeLevel}</div>
+                  <div>Loop Counter: {loopCounterLevel}</div>
+                  {counterExp !== 0 && loopCounterLevel !== 3 && <div className="exp-bar-container">
+                    {makeExpBars(counterExp, loopCounterLevel)}
+                  </div>}
                 </div>
-                <div className={`if-range-bars command-border-color-${colorInd}`} style={{width: rangeBarWidth}}></div>
-                {rangeExp !== 0 && ifRangeLevel !== 3 && <div className="command-exp-bar-container">
-                  {makeExpBars(rangeExp, ifRangeLevel)}
+                <div className={`loop-range-bars command-border-color-${colorInd}`} style={{width: rangeBarWidth, left: rangeBarLeft}}></div>
+                {rangeExp !== 0 && loopRangeLevel !== 3 && <div className="command-exp-bar-container">
+                  {makeExpBars(rangeExp, loopRangeLevel)}
                 </div>}
               {/* </div> */}
             </div>
@@ -63,4 +68,4 @@ const IfCard = (props) => {
   );
 }
 
-  export default IfCard;
+  export default LoopCard;

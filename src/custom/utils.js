@@ -1,6 +1,6 @@
 import React from 'react';
-import { CARDS, CARD_TYPES, COMICS } from './data';
-import { moveIfConditionCard } from './fetcher';
+import { BENCHES, CARDS, CARD_TYPES, COMICS, EMPTY_CARD } from './data';
+import { moveIfConditionCard, purchaseCard, purchaseRoutineCard, sellCard } from './fetcher';
 
 // the Knuth shuffle algorithm
 export const shuffle = (array) => {
@@ -56,55 +56,80 @@ export const makeExpBars = (exp, level) => {
   return expBars;
 }
 
-const moveIfCond = async (state, source, destination, combine) => {
-  console.log(state);
-  console.log(source);
-  console.log(destination);
-  console.log(combine);
-  return await moveIfConditionCard(state, source, destination);
-}
-
 // method to handle to the heroe cards movement
-export const move = (state, source, destination, combine) => {
-  if (source.droppableId.startsWith('if-slots')) {
-    const resp = moveIfCond(state, source, destination, combine);
-    return resp;
-  }
+export const move = async (state, source, destination, combine) => {
   const srcListClone = [...state[source.droppableId].slots];
   var destListClone;
-  if (combine) {
-    if (combine.draggableId.includes(CARD_TYPES.EMPTY)) {
-      destListClone = [...state[combine.droppableId].slots]
-      destListClone.splice(source.index, 1);
-      // TODO: Change how this works it is a terrible way to get index
-      const index = combine.draggableId.charAt(combine.draggableId.length - 1);
-      destination = {droppableId: combine.droppableId, index};
+  const [combineCardName, combineCardId] = combine.draggableId.split(':');
+  destListClone = [...state[combine.droppableId].slots]
+
+  if (source.droppableId === combine.droppableId) {
+    let combineInd = combineCardName.includes(CARD_TYPES.EMPTY)
+      ? combineCardId 
+      : destListClone.findIndex((card) => card.cardId === combineCardId);
+    
+    // If they are the same card combine, else swap
+    if (combineCardName === srcListClone[source.index].name) {
+      const [movedElement] = destListClone.splice(source.index, 1, EMPTY_CARD);
+      const combinedCard = destListClone[combineInd];
+      combinedCard.exp += movedElement.exp;
+      combinedCard.conditionExp += movedElement.conditionExp;
+      combinedCard.rangeExp += movedElement.rangeExp;
+    } else {
+      [destListClone[source.index], destListClone[combineInd]] = [destListClone[combineInd], destListClone[source.index]]
     }
-  } else {
-    destListClone =
-      source.droppableId === destination.droppableId
-        ? srcListClone
-        : [...state[destination.droppableId].slots];
   }
-  const [movedElement] = srcListClone.splice(source.index, 1);
-  destListClone.splice(destination.index, 0, movedElement);
+  else { // Different source
+    if (combineCardName.includes(CARD_TYPES.EMPTY)) {
+      const [movedElement] = srcListClone.splice(source.index, 1, EMPTY_CARD);
+      // const index = combine.draggableId.charAt(combine.draggableId.length - 1);
+      destListClone.splice(combineCardId, 1, movedElement);
+    }
+    else { // Combine with nonempty and must be the same name
+      // If they are the same card combine, else swap
+      if (combineCardName === srcListClone[source.index].name) {
+        const [movedElement] = srcListClone.splice(source.index, 1, EMPTY_CARD);
+        const combinedCard = destListClone.find((card) => card.cardId === combineCardId);
+        combinedCard.exp += movedElement.exp;
+        combinedCard.conditionExp += movedElement.conditionExp;
+        combinedCard.rangeExp += movedElement.rangeExp;
+      }
+      else {
+        return Promise.resolve({selectedCard: null});
+      }
+      // const combinedCard = destListClone.find((card) => {
+      //   return card.cardId === combineCardId;
+      // }); 
+    }
+  }
 
+  let otherResp = {};
+  if (combine.droppableId === BENCHES.DISCARD) {
+    if (source.droppableId === BENCHES.SHOP) {
+      return Promise.resolve({selectedCard: null});
+    }
+    otherResp = await sellCard(state, srcListClone, source.droppableId === BENCHES.CHARACTER)
+  }
+  if (source.droppableId === BENCHES.SHOP) {
+    otherResp = await purchaseCard(state, destListClone, combine.droppableId === BENCHES.CHARACTER)
+  }
 
-  return {
+  return Promise.resolve({
+    ...otherResp,
     selectedCard: null,
-    [source.droppableId]: {
-      ...source,
-      slots: srcListClone,
-    },
-    ...(source.droppableId === destination.droppableId
+    ...(source.droppableId === combine.droppableId
       ? {}
       : {
-          [destination.droppableId]: {
-            ...destination,
-            slots: destListClone,
-          }
+          [source.droppableId]: {
+            ...source,
+            slots: srcListClone,
+          },
         }),
-  };
+    [combine.droppableId]: {
+      id: combine.droppableId,
+      slots: destListClone,
+    }
+  });
 };
 
 // method to get time left
