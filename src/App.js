@@ -138,8 +138,7 @@ function App() {
         currentGold={gameData.gold}
         turnCount={gameData.turnCount}
         winCount={gameData.winCount}/>
-      {( true || gameData.gameState === GAME_STATE.PLAYING ||
-        gameData.gameState === GAME_STATE.DONE) && (
+      {( gameData.gameState === GAME_STATE.PLAYING ) && (
         <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
           <div className="container">
             <div className="columns">

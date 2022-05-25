@@ -8,6 +8,7 @@ export const HEAL = 'heal';
 export const GAME_STATE = {
   READY: 'ready',
   PLAYING: 'playing',
+  BATTLE: 'battle',
   DONE: 'done',
 };
 

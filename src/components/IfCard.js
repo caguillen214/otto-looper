@@ -46,10 +46,13 @@ const IfCard = (props) => {
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}>
               {/* <div className='if-card-container'> */}
-                
-                <div className="if-details-container" >
-                  <div>IF enemy: {ifRangeLevel}</div>
-                </div>
+                  If Enemy:
+                <select name="cars" id="cars">
+                  <option value="volvo">Volvo</option>
+                  <option value="saab">Saab</option>
+                  <option value="mercedes">Mercedes</option>
+                  <option value="audi">Audi</option>
+                </select>
                 <div className={`if-range-bars command-border-color-${colorInd}`} style={{width: rangeBarWidth}}></div>
                 {rangeExp !== 0 && ifRangeLevel !== 3 && <div className="command-exp-bar-container">
                   {makeExpBars(rangeExp, ifRangeLevel)}
