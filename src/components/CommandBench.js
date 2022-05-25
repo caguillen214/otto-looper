@@ -6,7 +6,7 @@ import { CARD_TYPES, EMPTY_CARD } from '../custom/data';
 import IfCard from './IfCard';
 import LoopCard from './LoopCard';
 
-const CommandBench = ({ isDropDisabled, selectedCard, cards = [], id }) => {
+const CommandBench = ({ isDropDisabled, selectedCard, cards = [], id, onIfConditionChange, onIfTargetChange }) => {
     const MAX_SLOTS = 7;
     const emptySlots = Array(MAX_SLOTS - cards.length).fill(EMPTY_CARD);
     const getDropDisabledStatus = (isDragDisabled) => {
@@ -38,6 +38,10 @@ const CommandBench = ({ isDropDisabled, selectedCard, cards = [], id }) => {
                                     type={type}
                                     colorInd={colorInd++}
                                     slots={props.slots}
+                                    condition={props.condition}
+                                    onConditionChange={onIfConditionChange}
+                                    onTargetChange={onIfTargetChange}
+                                    targettingEnemy={props.targettingEnemy}
                                     conditionExp={props.conditionExp}
                                     rangeExp={props.rangeExp}
                                     tier={tier} />

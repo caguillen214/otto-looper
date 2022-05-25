@@ -34,6 +34,14 @@ export const CARD_TYPES = {
   ULT: 'ult',
 }
 
+export const IF_CONDITIONS = [
+    'IS ATTACK',
+    'IS BLOCK',
+    'IS CHARGE',
+    'HAS MORE ATTACK',
+    'HAS MORE HEALTH',
+  ];
+
 export const EMPTY_CARD = {
   name: 'empty',
   type: CARD_TYPES.EMPTY
@@ -53,6 +61,8 @@ export const IF_CARD_WITH_ONE_SUB = {
   ],
   conditionExp: 1,
   rangeExp: 4,
+  condition: 3,
+  targettingEnemy: false,
 };
 export const IF_CARD_WITH_ONE_SUB2 = {
   name: 'if',
@@ -68,6 +78,8 @@ export const IF_CARD_WITH_ONE_SUB2 = {
   ],
   conditionExp: 4,
   rangeExp: 1,
+  condition: 0,
+  targettingEnemy: true,
 };
 
 export const CARDS = [
@@ -78,6 +90,8 @@ export const CARDS = [
     conditionExp: 1,
     rangeExp: 1,
     slots: [],
+    condition: 0,
+    targettingEnemy: true,
   },  
   {
     name: 'loop',

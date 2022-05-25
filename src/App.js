@@ -1,5 +1,6 @@
 import React, {useState, useCallback, useEffect} from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
+import Button from '@mui/material/Button';
 
 import * as constants from "./custom/data";
 import { CARDS, BENCHES, EMPTY_CARD } from './custom/data';
@@ -98,6 +99,22 @@ function App() {
     }));
   };
 
+  const onIfTargetChange = (index, value) => {
+    setGameData((state) => {
+      const newState = {...state};
+      newState[BENCHES.COMMAND].slots[index].targettingEnemy = value;
+      return newState;
+    })
+  }
+
+  const onIfConditionChange = (index, value) => {
+    setGameData((state) => {
+      const newState = {...state};
+      newState[BENCHES.COMMAND].slots[index].condition = value;
+      return newState;
+    })
+  }
+
   const onDragStart = (prop) => {
     const { source } = prop;
     setGameData((state) => {
@@ -150,6 +167,8 @@ function App() {
                     selectedCard={gameData.selectedCard}
                     cards={gameData[BENCHES.COMMAND].slots}
                     isDropDisabled={isDropDisabled}
+                    onIfConditionChange={onIfConditionChange}
+                    onIfTargetChange={onIfTargetChange}
                   />
                   <RoutineBench
                     id={BENCHES.ROUTINE}
@@ -175,7 +194,7 @@ function App() {
                     isDropDisabled={isDropDisabled} />
                 </div>
                 <div className='column col-12' style={{marginTop: '16px'}}>
-                  <button onClick={onRerollShop}>Reroll Shop</button>
+                  <Button onClick={onRerollShop}>Reroll Shop</Button>
                 </div>
               </div>
               <CharacterBench
