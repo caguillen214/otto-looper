@@ -1,9 +1,13 @@
 import React from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 
-const EmptySlot = ({ parentId, index, emptyText }) => {
+const EmptySlot = ({ parentId, index, emptyText, programCounter }) => {
   const id = `${parentId}-empty:${index}`;
-  const stylething = parentId !== 'discard' ? {style:{transform:'none !important'}} : {}
+  const styleThing = parentId !== 'discard' ? {style:{transform:'none !important'}} : {}
+
+  const showCombineHover = (combineTargetFor) => {
+    return programCounter === index || combineTargetFor ? 'combined-hover' : '';
+  }
 
   return (
     <Draggable key={id} draggableId={id} index={index} isDragDisabled={true}>
@@ -20,11 +24,11 @@ const EmptySlot = ({ parentId, index, emptyText }) => {
           // style={{transform: 'none !important'}}
           // >Drop</div> :
           <div
-            className={`${parentId}-card tile tile-centered card empty-slot ${snapshot.combineTargetFor ? 'combined-hover': ''}`}
+            className={`${parentId}-card tile tile-centered card empty-slot ${showCombineHover(snapshot.combineTargetFor)}`}
             ref={provided.innerRef}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
-            {...stylething}
+            {...styleThing}
           >
             {emptyText}
           </div>

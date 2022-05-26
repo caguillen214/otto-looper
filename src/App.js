@@ -1,5 +1,6 @@
 import React, {useState, useCallback, useEffect} from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
+import Button from '@mui/material/Button';
 
 import * as constants from "./custom/data";
 import { CARDS, BENCHES, EMPTY_CARD } from './custom/data';
@@ -11,6 +12,7 @@ import RoutineBench from './components/RoutineBench';
 import ShopBench from './components/ShopBench';
 import CharacterBench from './components/CharacterBench';
 import Footer from './components/Footer';
+import Battle from './components/Battle';
 import { rollShop, startNewGame } from './custom/fetcher';
 import CommandBench from './components/CommandBench';
 import DiscardBench from './components/DiscardBench';
@@ -86,8 +88,10 @@ function App() {
     );
   };
 
-  const resetGame = () => {
-    // setState(initialState);
+  const startBattle = () => {
+    setGameData((state) => {
+      return {...state, gameState: GAME_STATE.BATTLE,}
+    })
   };
 
   const onRerollShop = async () => {
@@ -97,6 +101,22 @@ function App() {
       ...rerollResp,
     }));
   };
+
+  const onIfTargetChange = (index, value) => {
+    setGameData((state) => {
+      const newState = {...state};
+      newState[BENCHES.COMMAND].slots[index].targettingEnemy = value;
+      return newState;
+    })
+  }
+
+  const onIfConditionChange = (index, value) => {
+    setGameData((state) => {
+      const newState = {...state};
+      newState[BENCHES.COMMAND].slots[index].condition = value;
+      return newState;
+    })
+  }
 
   const onDragStart = (prop) => {
     const { source } = prop;
@@ -135,22 +155,27 @@ function App() {
         gameState={gameState}
         timeLeft={timeLeft}
         endGame={endGame}
+        startBattle={startBattle}
         currentGold={gameData.gold}
         turnCount={gameData.turnCount}
         winCount={gameData.winCount}/>
-      {( true || gameData.gameState === GAME_STATE.PLAYING ||
-        gameData.gameState === GAME_STATE.DONE) && (
-        <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
+      <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
+        {(gameData.gameState === GAME_STATE.BATTLE) && (
+          <Battle gameData={gameData}></Battle>
+        )}
+        {(gameData.gameState === GAME_STATE.PLAYING) && (
           <div className="container">
             <div className="columns">
               <div className="columns column col-8 routine-container">
                 <div className="divider col-12" data-content={'ROUTINE'} />
-                <div className="column col-10">
+                <div className="column col-11S">
                   <CommandBench
                     id={BENCHES.COMMAND}
                     selectedCard={gameData.selectedCard}
                     cards={gameData[BENCHES.COMMAND].slots}
                     isDropDisabled={isDropDisabled}
+                    onIfConditionChange={onIfConditionChange}
+                    onIfTargetChange={onIfTargetChange}
                   />
                   <RoutineBench
                     id={BENCHES.ROUTINE}
@@ -176,7 +201,7 @@ function App() {
                     isDropDisabled={isDropDisabled} />
                 </div>
                 <div className='column col-12' style={{marginTop: '16px'}}>
-                  <button onClick={onRerollShop}>Reroll Shop</button>
+                  <Button onClick={onRerollShop}>Reroll Shop</Button>
                 </div>
               </div>
               <CharacterBench
@@ -188,10 +213,9 @@ function App() {
                 isDropDisabled={isDropDisabled}
               />
             </div>
-
           </div>
+          )}
         </DragDropContext>
-      )}
       <Footer />
     </>
   );

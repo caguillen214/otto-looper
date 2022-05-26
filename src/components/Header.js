@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from '@mui/material/Button';
 
 import { GAME_STATE, getSeconds } from '../custom/utils';
 
@@ -10,9 +11,9 @@ const Header = ({ timeLeft, gameState, startBattle, turnCount,  winCount, curren
         <div>
           <b>Current Gold: {currentGold}</b>
         </div>
-        <button className="btn btn-default" onClick={startBattle}>
+        <Button className="btn btn-default" onClick={startBattle}>
           Start Battle
-        </button>
+        </Button>
       </>
     )}
   </header>

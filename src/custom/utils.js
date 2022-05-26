@@ -92,6 +92,7 @@ export const move = async (state, source, destination, combine) => {
         const combinedCard = destListClone.find((card) => card.cardId === combineCardId);
         combinedCard.exp += movedElement.exp;
         combinedCard.conditionExp += movedElement.conditionExp;
+        combinedCard.counterExp += movedElement.counterExp;
         combinedCard.rangeExp += movedElement.rangeExp;
       }
       else {
@@ -143,4 +144,5 @@ export const GAME_STATE = {
   READY: 'ready',
   PLAYING: 'playing',
   DONE: 'done',
+  BATTLE: 'battle',
 };

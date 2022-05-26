@@ -50,7 +50,7 @@ footer {
   flex: 1;
   font-size: 12px;
   /* height: 125px; */
-  /* padding: 4px; */
+  padding: 0 4px;
   margin: 4px;
   max-width: 125px;
 }
@@ -78,8 +78,8 @@ footer {
   border: solid purple;
 }
 
-.character-bench {
-
+.routine-bench {
+  /* padding-left: 2px; */
 }
 
 .character-card {
@@ -117,7 +117,7 @@ footer {
 
 .empty-slot.command-card {
   border-color: goldenrod;
-  margin: 4px 0;
+  /* margin: 4px 0; */
 }
 
 .card-icon {
@@ -192,15 +192,23 @@ footer {
 .if-card {
   align-items: start;
   color: goldenrod;
-  border: 2px solid goldenrod;
+  border: 1px solid goldenrod;
   flex-direction: column;
+  margin: 4px 4px;
   position: relative;
-  margin: 4px 0;
+  /* padding: 0px 4px; */
 }
 
 .if-details-container {
   padding: 4px 4px 12px 4px;
   width: 100%;
+}
+
+.if-condition-toggle {
+  display: flex;
+  font-size: 14px;
+  justify-content: space-around;
+  width: 100%
 }
 
 .if-cards-container {
@@ -221,7 +229,7 @@ footer {
 }
 
 .loop-range-bars {
-  border: 4px dashed rgba(204, 220, 22, 0.753);
+  border: 3px dashed rgba(204, 220, 22, 0.753);
   border-bottom: none;
   width: 100%;
   position: absolute;
@@ -231,7 +239,7 @@ footer {
 
 
 .if-range-bars {
-  border: 4px dashed rgba(220, 158, 22, 0.753);
+  border: 3px dashed rgba(220, 158, 22, 0.753);
   border-bottom: none;
   width: 100%;
   position: absolute;
@@ -268,8 +276,45 @@ footer {
 }
 
 @keyframes blink { 
+  0% { border-width: 2px; border-style: solid; } 
   50% { border-width: 2px; border-style: dashed; } 
 }
 .combined-hover { /*or other element you want*/
-   animation: blink .5s step-end infinite alternate;
+   animation: blink .3s step-end infinite alternate;
+}
+
+.MuiInput-root {
+  width: 95px;
+  font-size: 12px !important;
+  padding-left: 4px;
+}
+
+.MuiMenuItem-root {
+  font-size: 12px !important;
+}
+
+.MuiSelect-select.MuiInputBase-input.MuiInput-input {
+  padding-right: 22px !important;
+}
+
+.MuiSwitch-root {
+  width: 32px !important;
+  height: 18px !important;
+  padding: 4px !important;
+  margin-top: 4px;
+}
+.MuiSwitch-thumb  {
+  width: 10px !important;
+  height: 10px !important;
+  margin-left: -2px !important;
+}
+
+.col-11S {
+  flex: none;
+  width: 88.5%;
+}
+
+.col-1L {
+  flex: none;
+  width: 11.5%;
 }
