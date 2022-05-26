@@ -16,8 +16,8 @@ export const startNewGame = async () => {
         },      
         [BENCHES.COMMAND]: {
             id: BENCHES.COMMAND,
-            slots: [EMPTY_CARD, EMPTY_CARD, constants.IF_CARD_WITH_ONE_SUB, EMPTY_CARD, EMPTY_CARD,constants.IF_CARD_WITH_ONE_SUB2, EMPTY_CARD]
-            // slots: [EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD]
+            slots: [EMPTY_CARD, EMPTY_CARD, constants.IF_CARD_WITH_ONE_SUB, EMPTY_CARD, EMPTY_CARD,EMPTY_CARD, EMPTY_CARD]
+            // slots: [EMPTY_CARD,EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD]
         },
         [BENCHES.CHARACTER]: {
             id: BENCHES.CHARACTER,
@@ -30,9 +30,10 @@ export const startNewGame = async () => {
         [constants.CHARACTER_STATS]: {
             [constants.ATTACK]: 2,
             [constants.DEXTERITY]: 2,
-            [constants.HEALTH]: 2,
+            [constants.HEALTH]: 10,
             [constants.GOLD]: 10,
             [constants.HEAL]: 2,
+            [constants.ARMOR]: 0,
         },
         gameId: '',
         turnCount: 1,
@@ -91,6 +92,7 @@ export const sellCard = async (state, characterCards, isCharacterBuy) => {
         health: 2,
         gold: 10,
         heal: 2,
+        armor: 0,
     };
     characterCards.forEach((card) => {
         if (card.attack) {
@@ -126,6 +128,7 @@ export const purchaseCard = async (state, characterCards, isCharacterBuy) => { /
         health: 2,
         gold: 10,
         heal: 2,
+        armor: 0,
     };
     characterCards.forEach((card) => {
         if (card.attack) {

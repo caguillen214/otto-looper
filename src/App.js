@@ -12,6 +12,7 @@ import RoutineBench from './components/RoutineBench';
 import ShopBench from './components/ShopBench';
 import CharacterBench from './components/CharacterBench';
 import Footer from './components/Footer';
+import Battle from './components/Battle';
 import { rollShop, startNewGame } from './custom/fetcher';
 import CommandBench from './components/CommandBench';
 import DiscardBench from './components/DiscardBench';
@@ -87,8 +88,10 @@ function App() {
     );
   };
 
-  const resetGame = () => {
-    // setState(initialState);
+  const startBattle = () => {
+    setGameData((state) => {
+      return {...state, gameState: GAME_STATE.BATTLE,}
+    })
   };
 
   const onRerollShop = async () => {
@@ -152,16 +155,20 @@ function App() {
         gameState={gameState}
         timeLeft={timeLeft}
         endGame={endGame}
+        startBattle={startBattle}
         currentGold={gameData.gold}
         turnCount={gameData.turnCount}
         winCount={gameData.winCount}/>
-      {( gameData.gameState === GAME_STATE.PLAYING ) && (
-        <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
+      <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
+        {(gameData.gameState === GAME_STATE.BATTLE) && (
+          <Battle gameData={gameData}></Battle>
+        )}
+        {(gameData.gameState === GAME_STATE.PLAYING) && (
           <div className="container">
             <div className="columns">
               <div className="columns column col-8 routine-container">
                 <div className="divider col-12" data-content={'ROUTINE'} />
-                <div className="column col-10">
+                <div className="column col-11S">
                   <CommandBench
                     id={BENCHES.COMMAND}
                     selectedCard={gameData.selectedCard}
@@ -206,10 +213,9 @@ function App() {
                 isDropDisabled={isDropDisabled}
               />
             </div>
-
           </div>
+          )}
         </DragDropContext>
-      )}
       <Footer />
     </>
   );

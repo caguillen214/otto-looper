@@ -6,7 +6,14 @@ import EmptySlot from './EmptySlot';
 import * as constants from "../custom/data";
 import { CARD_TYPES, EMPTY_CARD } from '../custom/data';
 
-const CharacterBench = ({ isDropDisabled, selectedCard, cards = [], id, characterStats = {}, level}) => {
+const CharacterBench = ({ 
+     isDropDisabled,
+     selectedCard,
+     cards = [],
+     id,
+     characterStats = {},
+     level,
+     showBench = true}) => {
     const MAX_SLOTS = 5;
     const emptySlots = Array(MAX_SLOTS - cards.length).fill(EMPTY_CARD);
     const getDropDisabledStatus = (isDragDisabled) => {
@@ -24,11 +31,12 @@ const CharacterBench = ({ isDropDisabled, selectedCard, cards = [], id, characte
           <img src={`./misc/otto.png`} style={{width: '150px', height: '200px'}} />
           <div>
             <div>Health: {characterStats[constants.HEALTH]}</div>
-            <div>Income: {characterStats[constants.GOLD]}</div>
+            {showBench ? <div>Income: {characterStats[constants.GOLD]}</div> 
+                    : <div>Armor: {characterStats[constants.ARMOR]}</div>}
             <div>Heal: {characterStats[constants.HEAL]}</div>
           </div>
       </div>
-      <Droppable
+      {showBench && <Droppable
         key={id}
         droppableId={id}
         direction="horizontal"
@@ -53,7 +61,7 @@ const CharacterBench = ({ isDropDisabled, selectedCard, cards = [], id, characte
                 </div>
             );
             }}
-      </Droppable>
+      </Droppable>}
     </div>
   );
 }

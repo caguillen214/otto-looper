@@ -4,6 +4,7 @@ export const DEXTERITY = 'dexterity';
 export const HEALTH = 'health';
 export const GOLD = 'gold';
 export const HEAL = 'heal';
+export const ARMOR = 'armor';
 
 export const GAME_STATE = {
   READY: 'ready',
@@ -97,8 +98,8 @@ export const CARDS = [
     name: 'loop',
     type: CARD_TYPES.COMMAND,
     cardId: `${Math.random()}`,
-    counterExp: 1,
-    rangeExp: 1,
+    counterExp: 4,
+    rangeExp: 7,
   },
   {
     name: 'atk1',
@@ -167,3 +168,16 @@ export const CARDS = [
     heal: 1,
   },
 ];
+
+export const newAttackCard = () => ({
+  name: 'atk',
+  type: CARD_TYPES.ROUTINE,
+  cardId: `${Math.random()}`,
+  exp: 1,
+})
+export const newBlockCard = () => ({
+  name: 'block',
+  type: CARD_TYPES.ROUTINE,
+  cardId: `${Math.random()}`,
+  exp: 1,
+})

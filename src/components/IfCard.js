@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -14,7 +14,10 @@ import EmptySlot from './EmptySlot';
 import Card from './Card';
 import { makeExpBars } from '../custom/utils';
 
-const IfForm = ({currCondition, currTarget, onConditionChange, onTargetChange, slotIndex}) => {
+import { makeStyles } from '@material-ui/core/styles';
+
+
+const IfForm = ({currCondition, currTarget, onConditionChange, onTargetChange, slotIndex, disabled}) => {
   const [condition, setCondition] = useState(currCondition);
   const [targettingEnemy, setTargettingEnemy] = useState(currTarget);
 
@@ -30,7 +33,13 @@ const IfForm = ({currCondition, currTarget, onConditionChange, onTargetChange, s
   }
 
   return (
-    <FormControl fullWidth  variant="standard" size="small">
+    disabled ? 
+    <div>
+      <div>If <b>{targettingEnemy ? ' enemy': ' self'}</b>:</div> 
+      <div>{IF_CONDITIONS[condition]}</div> 
+    </div>
+    : 
+    <FormControl fullWidth  variant="standard" size="small" disabled={disabled}>
         <div className='if-condition-toggle'>
             If <b>{targettingEnemy ? ' enemy': ' self'}</b>
             <Switch
@@ -43,6 +52,7 @@ const IfForm = ({currCondition, currTarget, onConditionChange, onTargetChange, s
       <Select
         value={condition}
         label="Condition"
+        autoWidth={true}
         size="small"
         onChange={handleConditionChange}
       >
@@ -56,20 +66,51 @@ const IfForm = ({currCondition, currTarget, onConditionChange, onTargetChange, s
 
 
 const IfCard = (props) => {
-  const { name, type, index, conditionExp, rangeExp, tier, cardId, parentId, colorInd,  } = props;
+  const { name,
+     type,
+     index,
+     conditionExp,
+     rangeExp,
+     tier,
+     cardId,
+     parentId,
+     colorInd,
+     isDragDisabled,
+     menuWidth,
+     cardWidth,
+     } = props;
   const cardClass = `card if-card command-border-color-${colorInd}`;
   const ifRangeLevel = ~~(rangeExp / 3) + 1;
   const ifConditionLevel = ~~(conditionExp / 3) + 1;
 
-  const rangeBarWidth = `calc(${(ifRangeLevel)*100}% + ${((ifRangeLevel) * 3  )}px)`
+  // const rangeBarWidth = `calc(${(ifRangeLevel)*100}% + ${((ifRangeLevel) * 3  )}px)`
+  // let rangeBarWidth = `calc(${(ifRangeLevel)*100}% + ${((ifRangeLevel) * 3  )}px)`
+  const [rangeBarWidth, setRangeBarWidth] = useState('100%');
   
   const showCombineHover = (combineTargetFor) => {
     return combineTargetFor?.includes(name) ? 'combined-hover' : '';
   }
 
+  useEffect(() => {
+    // setMenuWidth(menuRef.current);
+    // console.log(menuRef)
+    const remainingWidth = menuWidth - cardWidth * 7;
+    const finWidth = cardWidth * ifRangeLevel + (ifRangeLevel - 1) * remainingWidth / 8 + 3;
+    setRangeBarWidth(`${finWidth}px`);
+  }, [menuWidth, cardWidth, rangeExp]);
+
+  // if (menuRef) {
+  //   console.log(menuRef)
+  // }
+
   return (
     // <div className={cardClass} onMouseOver={()=>{console.log('over')}}>
-      <Draggable  key={name} draggableId={name+':'+cardId} index={index} type={type}>
+      <Draggable
+        key={name}
+        draggableId={name+':'+cardId}
+        index={index}
+        isDragDisabled={isDragDisabled}
+        type={type}>
         {(provided, snapshot) => {
           if(!snapshot.isDragging) {
             provided.draggableProps = {
@@ -98,6 +139,7 @@ const IfCard = (props) => {
               {/* <div className='if-card-container'> */}
                 <IfForm
                   slotIndex={index}
+                  disabled={isDragDisabled}
                   currCondition={props.condition}
                   currTarget={props.targettingEnemy}
                   onConditionChange={props.onConditionChange}
